@@ -2,6 +2,8 @@
 
 void MatcherI3DRSGM::init(void)
 {
+    qDebug() << "[MatcherI3DRSGM] Initalising matcher params...";
+    //std::cout << "Initalising matcher params..." << std::endl;
     initSGMParameters();
     /*
     enableInterpolation(false);
@@ -31,7 +33,7 @@ void MatcherI3DRSGM::loadParameters(void)
     if (QFile("./params/i3dr_matcher_settings.param").exists())
         readConfig("./params/i3dr_matcher_settings.param", params);
     else
-        qDebug() << "Failed to open matcher settings file";
+        qDebug() << "[MatcherI3DRSGM] Failed to open matcher settings fileasfsad";
 }
 
 void MatcherI3DRSGM::initSGMParameters()
@@ -100,13 +102,15 @@ void MatcherI3DRSGM::forwardMatch()
         }
         catch (...)
         {
-            std::cerr << "FAILED TO COMPUTE" << std::endl;
+            qWarning() << "[MatcherI3DRSGM] FAILED TO COMPUTE";
+            //std::cerr << "FAILED TO COMPUTE" << std::endl;
             return;
         }
     }
     else
     {
-        std::cerr << "Matcher handle not found" << std::endl;
+        qWarning() << "[MatcherI3DRSGM] Matcher handle not found";
+        //std::cerr << "[MatcherI3DRSGM] Matcher handle not found" << std::endl;
         createMatcher();
         return;
     }
@@ -131,33 +135,24 @@ void MatcherI3DRSGM::readConfig(const std::string &sConfigFile,
 
 void MatcherI3DRSGM::createMatcher()
 {
-    /*
-  if (matcher_handle != nullptr)
-  {
-    JR::Phobos::DestroyMatchStereoHandle(matcher_handle);
-  }
-  try
-  {
-    //checkMemoryValid(image_size.width, image_size.height);
-    isMemoryValid = true;
-    if (isMemoryValid)
+    if (matcher_handle != nullptr)
     {
-      std::cout << "Re-creating matcher with new paramters..." << std::endl;
-      WriteIniFileRaw(tmp_param_file, params_raw);
-      params = JR::Phobos::SMatchingParametersInput();
-      JR::Phobos::ReadIniFile(params, tmp_param_file);
-      matcher_handle = JR::Phobos::CreateMatchStereoHandle(params);
-      std::cout << "Re-created matcher with new paramters." << std::endl;
+        JR::Phobos::DestroyMatchStereoHandle(matcher_handle);
     }
-    else
+    try
     {
-      std::cerr << "NOT ENOUGH GPU MEMORY AVAILABLE" << std::endl;
+        qInfo() << "[MatcherI3DRSGM] Re-creating matcher with new paramters...";
+        //std::cerr << "Re-creating matcher with new paramters..." << std::endl;
+        //WriteIniFileRaw(tmp_param_file, params_raw);
+        params = JR::Phobos::SMatchingParametersInput();
+        //JR::Phobos::ReadIniFile(params, tmp_param_file);
+        matcher_handle = JR::Phobos::CreateMatchStereoHandle(params);
+        qInfo() << "[MatcherI3DRSGM] Re-created matcher with new paramters.";
+        //std::cerr << "Re-created matcher with new paramters." << std::endl;
     }
-  }
-  catch (...)
-  {
-    std::cerr << "Failed to create I3DR matcher with chosen parameters" << std::endl;
-    //std::cerr << ex.what() << std::endl;
-  }
-  */
+    catch (...)
+    {
+        qWarning() << "[MatcherI3DRSGM] Failed to create I3DR matcher with chosen parameters";
+        //std::cerr << "Failed to create I3DR matcher with chosen parameters" << std::endl;
+    }
 }
