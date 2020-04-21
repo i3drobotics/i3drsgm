@@ -25,16 +25,9 @@ class MatcherWidgetI3DRSGM : public MatcherWidget {
    void minDisparity(int);
    void disparityRange(int);
    void blockSize(int);
-   void prefilterCap(int);
-   void prefilterSize(int);
-   void prefilterType(int);
-   void textureThreshold(int);
-   void speckleWindow(int);
-   void speckleRange(int);
-   void consistency(int);
-   void uniquenessRatio(int);
+   void pyramidLevel(int);
+   void interpolate(bool);
    void saveClicked();
-
 
  public:
    explicit MatcherWidgetI3DRSGM(QWidget *parent = 0, cv::Size image_size =cv::Size(0,0));
@@ -45,17 +38,8 @@ public slots:
    void updateDisparityRange(int);
    void updateBlockSize(int);
    void updateMinDisparity(int);
-
-   void updatePrefilterCap(int cap);
-   void updatePrefilterSize(int size);
-   void updatePrefilterType(int index);
-   void updateTextureThreshold(int threshold);
-   void updateConsistency(int consistency);
-   void updateUniquenessRatio(int ratio);
-   void updateSpeckleRange(int range);
-   void updateSpeckleWindow(int window);
-   void enableSpeckleFilter(bool enable);
-   void enableConsistency(bool enable);
+   void updatePyramidLevel(int cap);
+   void enableInterpolatation(bool enable);
 
    AbstractStereoMatcher* getMatcher(void);
 

@@ -79,47 +79,17 @@ MatcherWidgetI3DRSGM::MatcherWidgetI3DRSGM(QWidget* parent,
     connect(ui->disparityRangeSlider, SIGNAL(valueChanged(int)), this,
             SLOT(updateDisparityRange(int)));
 
-    connect(ui->prefilterCapSlider, SIGNAL(valueChanged(int)), this,
-            SLOT(updatePrefilterCap(int)));
-    connect(ui->prefilterCapSlider, SIGNAL(valueChanged(int)),
-            ui->prefilterCapLabel, SLOT(setNum(int)));
-    connect(ui->prefilterSizeSlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updatePrefilterSize(int)));
-    connect(ui->prefilterCombo, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(updatePrefilterType(int)));
+    connect(ui->pyramidLevelSlider, SIGNAL(sliderMoved(int)), this,
+            SLOT(updatePyramidLevel(int)));
 
-    connect(ui->textureThresholdSlider, SIGNAL(sliderMoved(int)),
-            ui->textureThresholdLabel, SLOT(setNum(int)));
-    connect(ui->textureThresholdSlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updateTextureThreshold(int)));
-
-    connect(ui->consistencySlider, SIGNAL(sliderMoved(int)), ui->consistencyLabel,
-            SLOT(setNum(int)));
-    connect(ui->consistencySlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updateConsistency(int)));
-
-    connect(ui->uniquenessRatioSlider, SIGNAL(sliderMoved(int)),
-            ui->uniquenessRatioLabel, SLOT(setNum(int)));
-    connect(ui->uniquenessRatioSlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updateUniquenessRatio(int)));
-
-    connect(ui->speckleRangeSlider, SIGNAL(sliderMoved(int)),
-            ui->speckleRangeLabel, SLOT(setNum(int)));
-    connect(ui->speckleWindowSlider, SIGNAL(sliderMoved(int)),
-            ui->speckleWindowLabel, SLOT(setNum(int)));
-
-    connect(ui->speckleRangeSlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updateSpeckleRange(int)));
-    connect(ui->speckleWindowSlider, SIGNAL(sliderMoved(int)), this,
-            SLOT(updateSpeckleWindow(int)));
-
-    connect(ui->speckleFilterCheck, SIGNAL(toggled(bool)), this,
-            SLOT(enableSpeckleFilter(bool)));
-    connect(ui->consistencyCheck, SIGNAL(toggled(bool)), this,
-            SLOT(enableConsistency(bool)));
+    connect(ui->interpolateCheck, SIGNAL(toggled(bool)), this,
+              SLOT(enableInterpolatation(bool)));
 
     connect(ui->saveParametersButton, SIGNAL(clicked(bool)), this,
             SLOT(onSaveClicked()));
+
+    matcher->enableOcclusionDetection(false);
+    matcher->enableOccInterpol(false);
 }
 
 AbstractStereoMatcher* MatcherWidgetI3DRSGM::getMatcher() {
@@ -127,79 +97,17 @@ AbstractStereoMatcher* MatcherWidgetI3DRSGM::getMatcher() {
 }
 
 void MatcherWidgetI3DRSGM::onSaveClicked() {
+    //TODO save params to file for quick loading
     //matcher->saveParams();
 }
 
-void MatcherWidgetI3DRSGM::updateSpeckleRange(int range) {
-    //matcher->setSpeckleFilterRange(range);
+void MatcherWidgetI3DRSGM::updatePyramidLevel(int level) {
+    ui->prefilterSizeLabel->setNum(level);
+    matcher->maxPyramid(level);
 }
 
-void MatcherWidgetI3DRSGM::updateSpeckleWindow(int window) {
-    //matcher->setSpeckleFilterWindow(window);
-}
-
-void MatcherWidgetI3DRSGM::enableSpeckleFilter(bool enable) {
-    if (enable) {
-        //matcher->setSpeckleFilterRange(ui->speckleRangeSlider->value());
-        //matcher->setSpeckleFilterWindow(ui->speckleWindowSlider->value());
-
-        ui->speckleRangeSlider->setEnabled(true);
-        ui->speckleWindowSlider->setEnabled(true);
-        ui->speckleRangeLabel->setEnabled(true);
-        ui->speckleWindowLabel->setEnabled(true);
-    } else {
-        //matcher->setSpeckleFilterRange(0);
-        //matcher->setSpeckleFilterWindow(0);
-
-        ui->speckleRangeSlider->setEnabled(false);
-        ui->speckleWindowSlider->setEnabled(false);
-        ui->speckleRangeLabel->setEnabled(false);
-        ui->speckleWindowLabel->setEnabled(false);
-    }
-}
-
-void MatcherWidgetI3DRSGM::enableConsistency(bool enable) {
-    if (enable) {
-        //matcher->setDisp12MaxDiff(ui->consistencySlider->value());
-
-        ui->consistencyLabel->setEnabled(true);
-        ui->consistencySlider->setEnabled(true);
-    } else {
-        //matcher->setDisp12MaxDiff(-1);
-
-        ui->consistencyLabel->setEnabled(false);
-        ui->consistencySlider->setEnabled(false);
-    }
-}
-
-void MatcherWidgetI3DRSGM::updatePrefilterCap(int cap) {
-    //matcher->maxPyramid(cap);
-}
-
-void MatcherWidgetI3DRSGM::updateTextureThreshold(int threshold) {
-    //matcher->setTextureThreshold(threshold);
-}
-
-void MatcherWidgetI3DRSGM::updateConsistency(int con) {
-    ui->consistencyLabel->setNum(con);
-    //matcher->setDisp12MaxDiff(con);
-}
-
-void MatcherWidgetI3DRSGM::updatePrefilterSize(int size) {
-    ui->prefilterSizeLabel->setNum(size);
-    matcher->maxPyramid(size);
-}
-
-void MatcherWidgetI3DRSGM::updateUniquenessRatio(int ratio) {
-    //matcher->setUniquenessRatio(ratio);
-}
-
-void MatcherWidgetI3DRSGM::updatePrefilterType(int index) {
-    if (index == 0) {
-        //matcher->setPrefilterType(-1);
-    } else {
-        //matcher->setPrefilterType(index - 1);
-    }
+void MatcherWidgetI3DRSGM::enableInterpolatation(bool enable) {
+    matcher->enableInterpolation(enable);
 }
 
 void MatcherWidgetI3DRSGM::setImageWidth(int width) { image_width = width; }

@@ -179,7 +179,7 @@ void MatcherI3DRSGM::backwardMatch()
                                     oDisparity,
                                     sgm_log,
                                     JR::Phobos::e_logError);
-            oDisparity.convertTo(disparity_lr, CV_32F, -16);
+            oDisparity.convertTo(disparity_rl, CV_32F, -16);
         }
         catch (...)
         {
