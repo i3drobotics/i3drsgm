@@ -75,6 +75,7 @@ private:
     int min_disparity, disparity_range;
 
     int matcher_status = 0;
+    int top_pyramid;
 
     std::mutex mtx;
 
