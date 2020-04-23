@@ -7,7 +7,7 @@
 #define MATCHERWIDGETI3DRSGM_H
 
 #include <matcherwidget.h>
-#include <matcheri3drsgm.h>
+#include <qmatcheri3drsgm.h>
 
 //!  OpenCV's Block Matcher QT Widget
 /*!
@@ -47,7 +47,7 @@ public slots:
 
  private:
   Ui::MatcherWidgetI3DRSGM *ui;
-  MatcherI3DRSGM* matcher;
+  QMatcherI3DRSGM* matcher;
   int block_size;
   int min_disparity;
   int disparity_range;

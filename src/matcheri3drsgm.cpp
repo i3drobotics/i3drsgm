@@ -1,14 +1,9 @@
 #include "matcheri3drsgm.h"
 
 //Initialise matcher
-void MatcherI3DRSGM::init()
+void MatcherI3DRSGM::init(std::string tmp_param_file, std::string param_file)
 {
-    QString qparam_file = QCoreApplication::applicationDirPath() + "/i3drsgm.param";
-    std::string param_file = qparam_file.toStdString();
-
-    QString qtmp_param_file = QCoreApplication::applicationDirPath() + "/tmp.param";
-    tmp_param_file = qtmp_param_file.toStdString();
-
+    tmp_param_file_ = tmp_param_file;
     std::cout << param_file << std::endl;
     this->params_raw = ReadFileRaw(param_file);
 
@@ -130,8 +125,9 @@ int MatcherI3DRSGM::getErrorDisparity(void)
 }
 
 //compute disparity
-void MatcherI3DRSGM::forwardMatch()
+cv::Mat MatcherI3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 {
+    cv::Mat oDisparity;
     std::cout << "[I3DRSGM] Starting match..." << std::endl;
     const std::lock_guard<std::mutex> lock(mtx);
     if (matcher_handle != nullptr)
@@ -139,16 +135,14 @@ void MatcherI3DRSGM::forwardMatch()
         std::string sgm_log = "./sgm_log.txt";
         try
         {
-            cv::Mat oDisparity;
             JR::Phobos::MatchStereo(matcher_handle,
-                                    *left,
-                                    *right,
+                                    left,
+                                    right,
                                     cv::Mat(),
                                     cv::Mat(),
                                     oDisparity,
                                     sgm_log,
                                     JR::Phobos::e_logError);
-            oDisparity.convertTo(disparity_lr, CV_32F, -16);
         }
         catch (...)
         {
@@ -161,27 +155,27 @@ void MatcherI3DRSGM::forwardMatch()
         //this->matcher_status = createMatcher();
     }
     std::cout << "[I3DRSGM] Match complete." << std::endl;
+    return oDisparity;
 }
 
 //backward match disparity
-void MatcherI3DRSGM::backwardMatch()
+cv::Mat MatcherI3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
 {
+    cv::Mat oDisparity;
     std::cout << "[I3DRSGM] Starting match..." << std::endl;
     if (matcher_handle != nullptr)
     {
         std::string sgm_log = "./sgm_log.txt";
         try
         {
-            cv::Mat oDisparity;
             JR::Phobos::MatchStereo(matcher_handle,
-                                    *left,
-                                    *right,
+                                    left,
+                                    right,
                                     cv::Mat(),
                                     cv::Mat(),
                                     oDisparity,
                                     sgm_log,
                                     JR::Phobos::e_logError);
-            oDisparity.convertTo(disparity_rl, CV_32F, -16);
         }
         catch (...)
         {
@@ -194,6 +188,7 @@ void MatcherI3DRSGM::backwardMatch()
         //this->matcher_status = createMatcher();
     }
     std::cout << "[I3DRSGM] Match complete." << std::endl;
+    return oDisparity;
 }
 
 void MatcherI3DRSGM::enableCPU(bool enable)
@@ -623,9 +618,9 @@ int MatcherI3DRSGM::createMatcher()
             JR::Phobos::DestroyMatchStereoHandle(matcher_handle);
         }
         std::cout << "Re-creating matcher with new paramters..." << std::endl;
-        WriteIniFileRaw(this->tmp_param_file, this->params_raw);
+        WriteIniFileRaw(this->tmp_param_file_, this->params_raw);
         this->params = JR::Phobos::SMatchingParametersInput();
-        JR::Phobos::ReadIniFile(this->params, this->tmp_param_file);
+        JR::Phobos::ReadIniFile(this->params, this->tmp_param_file_);
         matcher_handle = JR::Phobos::CreateMatchStereoHandle(params);
         std::cout << "Re-created matcher with new paramters." << std::endl;
         return 0;
