@@ -1,9 +1,6 @@
 #ifndef MATCHERI3DRSGM_H
 #define MATCHERI3DRSGM_H
 
-#include <abstractstereomatcher.h>
-#include <QDir>
-#include <QDebug>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -17,13 +14,10 @@
   Stereo matcher using I3DR's SGM algorithm
 */
 
-class MatcherI3DRSGM : public AbstractStereoMatcher {
-    Q_OBJECT
+class MatcherI3DRSGM {
 public:
-    explicit MatcherI3DRSGM(QObject *parent = 0,
-                            cv::Size image_size = cv::Size(0, 0))
-        : AbstractStereoMatcher(parent, image_size) {
-        init();
+    explicit MatcherI3DRSGM(std::string tmp_param_file, std::string param_file) {
+        init(tmp_param_file,param_file);
     }
 
     ~MatcherI3DRSGM(void){
@@ -32,7 +26,6 @@ public:
         }
     }
 
-    void parseConfig(std::string input_file);
     int getErrorDisparity();
     int createMatcher();
 
@@ -64,8 +57,8 @@ public:
     void setNoDataValue(int val);
     void enableCPU(bool enable);
 
-    void forwardMatch();
-    void backwardMatch();
+    cv::Mat forwardMatch(cv::Mat left, cv::Mat right);
+    cv::Mat backwardMatch(cv::Mat left, cv::Mat right);
 
     int getStatus();
 
@@ -79,7 +72,7 @@ private:
 
     std::mutex mtx;
 
-    void init();
+    void init(std::string tmp_param_file, std::string param_file);
     std::vector<std::string> ReadFileRaw(std::string &sConfigFile);
     void WriteIniFileRaw(std::string &filename, std::vector<std::string> lines);
     void EditLineRaw(std::vector<std::string> *lines, std::string value, int line_num);
@@ -87,7 +80,7 @@ private:
     bool EditPyramidParamRaw(std::vector<std::string> *lines, int pyramid_num,std::string param_name,std::string param_value,bool is_subpix=false);
 
     std::vector<std::string> params_raw;
-    std::string tmp_param_file;
+    std::string tmp_param_file_;
 };
 
 #endif  // MATCHERI3DRSGM_H

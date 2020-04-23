@@ -10,7 +10,7 @@ MatcherWidgetI3DRSGM::MatcherWidgetI3DRSGM(QWidget* parent,
                                            cv::Size image_size)
     : MatcherWidget(parent), ui(new Ui::MatcherWidgetI3DRSGM) {
     ui->setupUi(this);
-    matcher = new MatcherI3DRSGM(this, image_size);
+    matcher = new QMatcherI3DRSGM(this, image_size);
 
     connect(ui->blockSizeSlider, SIGNAL(valueChanged(int)), this,
             SLOT(updateBlockSize(int)));
