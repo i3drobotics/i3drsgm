@@ -1,5 +1,2 @@
 # Stereo Vision Toolkit Pro files
-This repository contains additional files required for pro version of stereo vision toolkit.
-This repository is used as a submodule to the main **public** git repository.
-These files **MUST** be kept **private**.
-Contains JR library and licenses.
+This repository contains files needed to impliment I3DRSGM. This repository is a submodule of a number of I3DR repositories to reduce repeated code. A license file is required for running the proprietory matcher. To purchase a license contact info@i3drobotics.com
