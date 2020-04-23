@@ -13,6 +13,8 @@ void MatcherI3DRSGM::init()
     this->params_raw = ReadFileRaw(param_file);
 
     this->matcher_status = createMatcher();
+
+    top_pyramid = 0;
 }
 
 int MatcherI3DRSGM::getStatus()
@@ -402,6 +404,8 @@ void MatcherI3DRSGM::maxPyramid(int pyramid_num)
         pyramid_num = params.nNumberOfPyramids;
     }
 
+    top_pyramid = params.nNumberOfPyramids - pyramid_num;
+
     int j = params.nNumberOfPyramids - 1;
     for (int i = 0; i <= params.nNumberOfPyramids; i++)
     {
@@ -417,6 +421,7 @@ void MatcherI3DRSGM::maxPyramid(int pyramid_num)
         //std::cerr << "i: " << i << " j: " << j << std::endl;
         j--;
     }
+
     if (include_subpix)
     {
         enableSubpixel(true);
@@ -534,9 +539,11 @@ void MatcherI3DRSGM::enableInterpolation(bool enable)
 
     for (int i = 0; i <= params.nNumberOfPyramids; i++)
     {
-        EditPyramidParamRaw(&this->params_raw, i, param_name, param_val);
+        EditPyramidParamRaw(&this->params_raw, i, param_name, "true");
     }
-    EditPyramidParamRaw(&this->params_raw, 0, param_name, param_val, true);
+
+    EditPyramidParamRaw(&this->params_raw, 0, param_name, param_val, false);
+    //EditPyramidParamRaw(&this->params_raw, 0, param_name, param_val, true);
     this->matcher_status = createMatcher();
 }
 
