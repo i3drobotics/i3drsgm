@@ -27,6 +27,7 @@ public:
     }
 
     int getErrorDisparity();
+    bool isLicenseValid();
     int createMatcher();
 
     void setDisparityShift(int shift);

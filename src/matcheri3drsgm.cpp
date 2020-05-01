@@ -17,6 +17,14 @@ int MatcherI3DRSGM::getStatus()
     return this->matcher_status;
 }
 
+bool MatcherI3DRSGM::isLicenseValid()
+{
+    //TODO function for checking license is valid
+    const std::lock_guard<std::mutex> lock(mtx);
+    bool licenseValid = (matcher_handle != nullptr);
+    return licenseValid;
+}
+
 bool MatcherI3DRSGM::EditParamRaw(std::vector<std::string> *lines, std::string param_name, std::string param_value)
 {
     // find location of pyramid in file
