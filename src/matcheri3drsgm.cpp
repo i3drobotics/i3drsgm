@@ -380,10 +380,10 @@ void MatcherI3DRSGM::setDisparityShift(int shift)
     //params.fTopPredictionShift = shift_p;
 
     //std::cout << "shift: " << shift << std::endl;
-    double shift_p = (double)shift / 20;
+    //double shift_p = (double)shift / 20;
     //std::cout << "shift_p: " << shift_p << std::endl;
 
-    std::string param_val = std::to_string(int(shift_p));
+    std::string param_val = std::to_string(int(shift));
 
     std::string param_name = "Top Prediction Shift";
     EditParamRaw(&this->params_raw, param_name, param_val);
