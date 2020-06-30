@@ -1,7 +1,7 @@
-#include "matcheri3drsgm.h"
+#include "i3drsgm.h"
 
 //Initialise matcher
-void MatcherI3DRSGM::init(std::string tmp_param_file, std::string param_file)
+I3DRSGM::I3DRSGM(std::string tmp_param_file, std::string param_file)
 {
     tmp_param_file_ = tmp_param_file;
     std::cout << param_file << std::endl;
@@ -12,12 +12,12 @@ void MatcherI3DRSGM::init(std::string tmp_param_file, std::string param_file)
     top_pyramid = 0;
 }
 
-int MatcherI3DRSGM::getStatus()
+int I3DRSGM::getStatus()
 {
     return this->matcher_status;
 }
 
-bool MatcherI3DRSGM::isLicenseValid()
+bool I3DRSGM::isLicenseValid()
 {
     //TODO function for checking license is valid
     const std::lock_guard<std::mutex> lock(mtx);
@@ -25,7 +25,7 @@ bool MatcherI3DRSGM::isLicenseValid()
     return licenseValid;
 }
 
-bool MatcherI3DRSGM::EditParamRaw(std::vector<std::string> *lines, std::string param_name, std::string param_value)
+bool I3DRSGM::EditParamRaw(std::vector<std::string> *lines, std::string param_name, std::string param_value)
 {
     // find location of pyramid in file
     std::string full_parameters_string = param_name + " = " + param_value;
@@ -45,7 +45,7 @@ bool MatcherI3DRSGM::EditParamRaw(std::vector<std::string> *lines, std::string p
     return param_found;
 }
 
-bool MatcherI3DRSGM::EditPyramidParamRaw(std::vector<std::string> *lines, int pyramid_num, std::string param_name, std::string param_value, bool is_subpix)
+bool I3DRSGM::EditPyramidParamRaw(std::vector<std::string> *lines, int pyramid_num, std::string param_name, std::string param_value, bool is_subpix)
 {
     // find location of pyramid in file
     std::string pyramid_string;
@@ -84,12 +84,12 @@ bool MatcherI3DRSGM::EditPyramidParamRaw(std::vector<std::string> *lines, int py
     return pyramid_found && param_found;
 }
 
-void MatcherI3DRSGM::EditLineRaw(std::vector<std::string> *lines, std::string value, int line_num)
+void I3DRSGM::EditLineRaw(std::vector<std::string> *lines, std::string value, int line_num)
 {
     lines->at(line_num) = value + "\n";
 }
 
-std::vector<std::string> MatcherI3DRSGM::ReadFileRaw(std::string &filename)
+std::vector<std::string> I3DRSGM::ReadFileRaw(std::string &filename)
 {
     std::ifstream file(filename);
     std::vector<std::string> lines;
@@ -109,7 +109,7 @@ std::vector<std::string> MatcherI3DRSGM::ReadFileRaw(std::string &filename)
     return lines;
 }
 
-void MatcherI3DRSGM::WriteIniFileRaw(std::string &filename, std::vector<std::string> lines)
+void I3DRSGM::WriteIniFileRaw(std::string &filename, std::vector<std::string> lines)
 {
     std::ofstream file(filename);
     if (file.is_open())
@@ -127,13 +127,13 @@ void MatcherI3DRSGM::WriteIniFileRaw(std::string &filename, std::vector<std::str
     }
 }
 
-int MatcherI3DRSGM::getErrorDisparity(void)
+int I3DRSGM::getErrorDisparity(void)
 {
     return -10000;
 }
 
 //compute disparity
-cv::Mat MatcherI3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
+cv::Mat I3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 {
     cv::Mat oDisparity;
     std::cout << "[I3DRSGM] Starting match..." << std::endl;
@@ -167,7 +167,7 @@ cv::Mat MatcherI3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 }
 
 //backward match disparity
-cv::Mat MatcherI3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
+cv::Mat I3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
 {
     cv::Mat oDisparity;
     std::cout << "[I3DRSGM] Starting match..." << std::endl;
@@ -199,7 +199,7 @@ cv::Mat MatcherI3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
     return oDisparity;
 }
 
-void MatcherI3DRSGM::enableCPU(bool enable)
+void I3DRSGM::enableCPU(bool enable)
 {
 
     std::string param_val;
@@ -222,7 +222,7 @@ void MatcherI3DRSGM::enableCPU(bool enable)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setNoDataValue(int val)
+void I3DRSGM::setDisparityError(int val)
 {
     std::string param_name = "DSI Nodata Value";
     std::string param_val = std::to_string(-val); //value is inverted in algorithm to make it apear behind camera (to be ignored)
@@ -234,7 +234,7 @@ void MatcherI3DRSGM::setNoDataValue(int val)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setSpeckleDifference(float diff)
+void I3DRSGM::setSpeckleDifference(float diff)
 {
     //std::cout << "Speckle difference: " << diff << std::endl;
     diff = diff / 10;
@@ -254,7 +254,7 @@ void MatcherI3DRSGM::setSpeckleDifference(float diff)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setSpeckleSize(int size)
+void I3DRSGM::setSpeckleSize(int size)
 {
     //std::cout << "Speckle size: " << size << std::endl;
     size = size / 10;
@@ -274,12 +274,12 @@ void MatcherI3DRSGM::setSpeckleSize(int size)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setMatchCosts(float P1, float P2){
+void I3DRSGM::setMatchCosts(float P1, float P2){
     setP1(P1);
     setP2(P2);
 }
 
-void MatcherI3DRSGM::setP1(float P1)
+void I3DRSGM::setP1(float P1)
 {
     float P1_scaled = P1 / 1000;
     float P1_subpix = P1_scaled / 10;
@@ -312,7 +312,7 @@ void MatcherI3DRSGM::setP1(float P1)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setP2(float P2)
+void I3DRSGM::setP2(float P2)
 {
     float P2_scaled = P2 / 1000;
     float P2_subpix = P2_scaled / 10;
@@ -346,7 +346,7 @@ void MatcherI3DRSGM::setP2(float P2)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setWindowSize(int census_size)
+void I3DRSGM::setWindowSize(int census_size)
 {
     if (census_size % 2 == 0)
     {
@@ -375,7 +375,7 @@ void MatcherI3DRSGM::setWindowSize(int census_size)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setDisparityShift(int shift)
+void I3DRSGM::setDisparityShift(int shift)
 {
     //params.fTopPredictionShift = shift_p;
 
@@ -390,7 +390,7 @@ void MatcherI3DRSGM::setDisparityShift(int shift)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::maxPyramid(int pyramid_num)
+void I3DRSGM::maxPyramid(int pyramid_num)
 {
     std::string param_val_true = "true";
     std::string param_val_false = "false";
@@ -437,7 +437,7 @@ void MatcherI3DRSGM::maxPyramid(int pyramid_num)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enablePyramid(bool enable, int pyramid_num)
+void I3DRSGM::enablePyramid(bool enable, int pyramid_num)
 {
     std::string param_val;
     if (enable)
@@ -455,7 +455,7 @@ void MatcherI3DRSGM::enablePyramid(bool enable, int pyramid_num)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enableSubpixel(bool enable)
+void I3DRSGM::enableSubpixel(bool enable)
 {
     //params.oFinalSubPixelParameters.bCompute = enable;
 
@@ -475,7 +475,7 @@ void MatcherI3DRSGM::enableSubpixel(bool enable)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::setDisparityRange(int n)
+void I3DRSGM::setDisparityRange(int n)
 {
     disparity_range = n / 10;
     //force odd number
@@ -494,7 +494,7 @@ void MatcherI3DRSGM::setDisparityRange(int n)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enableTextureDSI(bool enable)
+void I3DRSGM::enableTextureDSI(bool enable)
 {
     /*
   for (auto &pyramid : params.oPyramidParams)
@@ -523,7 +523,7 @@ void MatcherI3DRSGM::enableTextureDSI(bool enable)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enableInterpolation(bool enable)
+void I3DRSGM::enableInterpolation(bool enable)
 {
     /* Toggle interpolation */
     //params.oPyramidParams[1].bInterpol = enable
@@ -550,7 +550,7 @@ void MatcherI3DRSGM::enableInterpolation(bool enable)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enableOcclusionDetection(bool enable)
+void I3DRSGM::enableOcclusionDetection(bool enable)
 {
     /* Toggle occlusion detection */
     /*
@@ -582,7 +582,7 @@ void MatcherI3DRSGM::enableOcclusionDetection(bool enable)
     this->matcher_status = createMatcher();
 }
 
-void MatcherI3DRSGM::enableOccInterpol(bool enable)
+void I3DRSGM::enableOccInterpol(bool enable)
 {
     /* Toggle occlusion interpolation */
     /*
@@ -614,7 +614,7 @@ void MatcherI3DRSGM::enableOccInterpol(bool enable)
     this->matcher_status = createMatcher();
 }
 
-int MatcherI3DRSGM::createMatcher()
+int I3DRSGM::createMatcher()
 {
     std::cout << "[I3DRSGM] Creating matcher..." << std::endl;
     try
