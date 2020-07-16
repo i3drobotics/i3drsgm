@@ -16,7 +16,7 @@ Tested on the following systems:
 # Setup
 ## Windows
 ### Automatic setup
-Double click 'install_3rdparty.bat'.
+Double click 'install_3rdparty.bat' found in the scripts folder.
 This will download and install 3rd party libraries to the correct folders.
 
 ### Manual setup
@@ -30,7 +30,7 @@ COMING SOON
 # Build
 ## Windows
 ### Automatic build
-Double click 'build.bat'. This will build and install the library to 'build' and 'install' folders in the repos directory.
+Double click 'build.bat' found in the scripts folder. This will build and install the library to 'build' and 'install' folders in the repos directory.
 
 ### Manual build
 ```
@@ -54,7 +54,7 @@ make
 
 # Package
 ## Windows
-Double click 'package.bat'. This will package the files in install/i3drsgm into an exe using 7-zip.
+Double click 'package.bat' found in the scripts folder. This will package the files in install/i3drsgm into an exe using 7-zip.
 The script expects 7-zip to be installed at 'C:\Program Files\7-Zip'. If this is different then you will need to adapt this script. 
 
 ## Linux
