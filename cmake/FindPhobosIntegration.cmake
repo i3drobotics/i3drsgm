@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+find_package(OpenCV REQUIRED)
+
 if (NOT PhobosIntegration_DIR)
     message( FATAL_ERROR "MUST define PhobosIntegration_DIR" )
 endif()
@@ -33,8 +35,8 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PHOBOSINTEGRATION DEFAULT_MSG PHOBOSINTEGRATION_INCLUDE_DIR PHOBOSINTEGRATION_LIBRARY)
 
 if (PHOBOSINTEGRATION_FOUND)
-    set(PhobosIntegration_LIBRARIES ${PHOBOSINTEGRATION_LIBRARY} )
-    set(PhobosIntegration_INCLUDE_DIRS ${PHOBOSINTEGRATION_INCLUDE_DIR} )
+    set(PhobosIntegration_LIBRARIES ${PHOBOSINTEGRATION_LIBRARY} ${OpenCV_LIBS} )
+    set(PhobosIntegration_INCLUDE_DIRS ${PHOBOSINTEGRATION_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
     set(PhobosIntegration_DEFINITIONS )
 else(PHOBOSINTEGRATION_FOUND)
     message(WARNING "PhobosIntegration not found")
