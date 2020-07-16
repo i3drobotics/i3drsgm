@@ -1,5 +1,16 @@
 #include "i3drsgm.h"
 
+/**
+ * @file i3drsgm.cpp
+ * @authors Ben Knight (bknight@i3drobotics.com)
+ * @brief
+ * @version 1.0.0
+ * @date 2020-07-07
+ *
+ * @copyright Copyright (c) I3D Robotics Ltd, 2020
+ *
+ */
+
 //Initialise matcher
 I3DRSGM::I3DRSGM(std::string tmp_param_file, std::string param_file)
 {
@@ -15,14 +26,6 @@ I3DRSGM::I3DRSGM(std::string tmp_param_file, std::string param_file)
 int I3DRSGM::getStatus()
 {
     return this->matcher_status;
-}
-
-bool I3DRSGM::isLicenseValid()
-{
-    //TODO function for checking license is valid
-    const std::lock_guard<std::mutex> lock(mtx);
-    bool licenseValid = (matcher_handle != nullptr);
-    return licenseValid;
 }
 
 bool I3DRSGM::EditParamRaw(std::vector<std::string> *lines, std::string param_name, std::string param_value)
