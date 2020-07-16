@@ -24,17 +24,13 @@ set(SOURCE_FILES src/i3drsgm.cpp)
 # Use FindXXX.cmake files for finding libraries
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Define OpenCV library
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
-
 # Define PhobosIntegration library
 find_package(PhobosIntegration REQUIRED)
 include_directories(${PhobosIntegration_INCLUDE_DIRS})
 
 # Build library
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} ${PhobosIntegration_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${PhobosIntegration_LIBRARIES})
 
 # Include headers in library
 target_include_directories(${PROJECT_NAME} PUBLIC
