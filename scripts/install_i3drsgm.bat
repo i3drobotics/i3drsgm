@@ -1,11 +1,18 @@
 @echo off
+:: set working directory to script directory
+SET initcwd=%cd%
 SET scriptpath=%~dp0
-echo %scriptpath:~0,-1%
 cd %scriptpath:~0,-1%
-SET url="TODO"
-SET outputfolder="%cd%"
-SET output="%outputfolder%\i3drsgm-v1.0.1.exe"
-bitsadmin /transfer OpenCV_Download_Job /download /priority normal %url% %output%
-%output% -o%outputfolder% -y
-del %output%
-echo opencv install complete.
+
+:: get GitHub PAT from first argument
+set token=%1
+:: download phobos integration exe from github release using token
+fetch --repo="https://github.com/i3drobotics/i3drsgm" --tag="v1.0.0" --release-asset="i3drsgm-1.0.0.exe" --progress --github-oauth-token=%token% ./
+:: extract self-exracting archive
+i3drsgm-1.0.0.exe -o"./" -y
+:: delete downloaded file
+del i3drsgm-1.0.0.exe
+echo I3DRSGM install complete
+
+:: reset working directory
+cd %initcwd%
