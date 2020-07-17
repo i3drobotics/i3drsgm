@@ -1,8 +1,9 @@
 @echo off
 
+SETLOCAL
 :: set working directory to script directory
+SET initcwd=%cd%
 SET scriptpath=%~dp0
-echo %scriptpath:~0,-1%
 cd %scriptpath:~0,-1%
 
 :: read github PAT from text file
@@ -12,12 +13,13 @@ set /p token=< token.txt
 call ..\3rdparty\opencv-3.4.1\install_opencv.bat
 
 :: install phobosIntegration
-cd ..\3rdparty\phobosIntegration-1.0.54\
-call install_phobosIntegration.bat %token%
+call ..\3rdparty\phobosIntegration-1.0.54\install_phobosIntegration.bat %token%
 
 :: reset working directory
-cd ..\..\
+cd %initcwd%
 
 :: complete message
 echo 3rdparty install complete.
 pause
+
+ENDLOCAL
