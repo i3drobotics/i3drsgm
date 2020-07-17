@@ -6,8 +6,8 @@ SET initcwd=%cd%
 SET scriptpath=%~dp0
 cd %scriptpath:~0,-1%
 
-:: set i3drsgm version
-set version="1.0.1"
+:: read i3drsgm version from file
+set /p version=< version.txt  
 
 cd ../
 

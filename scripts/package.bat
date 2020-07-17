@@ -7,8 +7,14 @@ cd %scriptpath:~0,-1%
 
 :: set 7z directory
 set z7path="C:\Program Files\7-Zip\7z"
-:: set i3drsgm app version
-set version="1.0.1"
+:: read i3drsgm version from file
+set /p version=< version.txt
+
+:: generate i3drsgm install script
+call update_install_script.bat
+:: copy install script to installer folder
+mkdir ..\installer
+copy install_i3drsgm.bat ..\installer\install_i3drsgm.bat
 
 cd ..\
 
