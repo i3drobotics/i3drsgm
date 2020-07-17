@@ -1,21 +1,25 @@
-# I3DRSGM
+# I3DRSGM [FOR INTERNAL USE ONLY]
 I3DR's Semi-Global Matcher for generation of disparity from stereo images. 
+To use this repository you will need to have been given access to use i3drobotics private repositories. This is due to the PhobosIntegration dependency being IP owned by I3DR which should not be accesable outside of the organisation. 
 
 ## Latest Release
-Download the latest release v1.0.0 [here]()
+Download the latest release v1.0.0 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.0/i3drsgm-1.0.0.exe)
 
 # Requirements
  - cmake 
- - OpenCV (See setup instructions for details)
- - Z-zip (Used to package library into exe, see package instructions for details)
+ - OpenCV v3.4.1 (See setup instructions for details.)
+ - PhobosIntegration v1.0.54 (See setup instructions for details.)
+ - Z-zip (Used to package library into exe, see package instructions for details.)
+ - Fetch (Portable app included in this repo. Used to fetch private github release files, see package instructions for details.)
 
-# Tested
+# Compatibility
 Tested on the following systems:
  - Windows 10 (x64)
 
 # Setup
 ## Windows
 ### Automatic setup
+Add a file to the scripts folder with the name 'token.txt'. Containing your GitHub public access token. 
 Double click 'install_3rdparty.bat' found in the scripts folder.
 This will download and install 3rd party libraries to the correct folders.
 
@@ -23,6 +27,10 @@ This will download and install 3rd party libraries to the correct folders.
 #### OpenCV
 Download OpenCV 3.4.1 from [here](https://sourceforge.net/projects/opencvlibrary/files/3.4.10/opencv-3.4.10-vc14_vc15.exe/download)
 Install self extracting archive into 3rdparty/opencv-3.4.1/
+
+#### PhobosIntegration
+Downoad Phobos Integration 1.0.54 from [here](TODO). You will needed to be given access to this private repository from I3DR. Contact info@i3drobotics.com for more info.
+
 
 ## Linux
 COMING SOON
