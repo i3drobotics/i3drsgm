@@ -1,4 +1,6 @@
 @echo off
+
+SETLOCAL
 :: set working directory to script directory
 SET initcwd=%cd%
 SET scriptpath=%~dp0
