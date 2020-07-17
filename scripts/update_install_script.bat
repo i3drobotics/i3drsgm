@@ -10,7 +10,7 @@ set /p version=< version.txt
 
 set InputFile=install_i3drsgm.template
 set OutputFile=install_i3drsgm.bat
-set insertline=11
+set insertline=8
 set newline=set version=%version%
 
 (for /f "tokens=1* delims=[]" %%a in ('find /n /v "##" ^< "%InputFile%"') do (
