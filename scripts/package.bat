@@ -15,6 +15,7 @@ call update_install_script.bat
 :: copy install script to installer folder
 mkdir ..\installer
 copy install_i3drsgm.bat ..\installer\install_i3drsgm.bat
+del install_i3drsgm.bat
 
 cd ..\
 
