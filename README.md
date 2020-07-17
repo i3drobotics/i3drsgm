@@ -62,7 +62,7 @@ make
 
 # Package
 ## Windows
-Double click 'package.bat' found in the scripts folder. This will package the files in install/i3drsgm into an exe using 7-zip.
+Double click 'package.bat' found in the scripts folder. This will package the files in install/i3drsgm into an exe using 7-zip and get everything ready for a software release.
 The script expects 7-zip to be installed at 'C:\Program Files\7-Zip'. If this is different then you will need to adapt this script. 
 
 ## Linux
