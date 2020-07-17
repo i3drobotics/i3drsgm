@@ -2,7 +2,7 @@
 SET scriptpath=%~dp0
 echo %scriptpath:~0,-1%
 cd %scriptpath:~0,-1%
-set version="1.0.0"
+set version="1.0.1"
 
 cd ../
 

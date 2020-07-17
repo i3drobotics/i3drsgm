@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # Define project
-project(I3DRSGM VERSION 1.0.0 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+project(I3DRSGM VERSION 1.0.1 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
 
 # Use 'Release' by default for build
 set(DEFAULT_BUILD_TYPE "Release")

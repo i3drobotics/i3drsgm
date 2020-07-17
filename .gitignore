@@ -3,3 +3,9 @@
 /installer
 /3rdparty/opencv-3.4.1/opencv
 /3rdparty/opencv-3.4.1/opencv-3.4.10-vc14_vc15.exe
+/scripts/token.txt
+/3rdparty/phobosIntegration-1.0.54/bin
+/3rdparty/phobosIntegration-1.0.54/include
+/3rdparty/phobosIntegration-1.0.54/lib
+/3rdparty/phobosIntegration-1.0.54/Licenses
+/3rdparty/phobosIntegration-1.0.54/phobosIntegration-1.0.54-win64_archive.exe
