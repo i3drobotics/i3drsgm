@@ -2,6 +2,8 @@
 I3DR's Semi-Global Matcher for generation of disparity from stereo images. 
 To use this repository you will need to have been given access to use i3drobotics private repositories. This is due to the PhobosIntegration dependency being IP owned by I3DR which should not be accesable outside of the organisation. 
 
+See [here](https://github.com/i3drobotics/i3drsgmApp) for a demo app that uses this library. 
+
 ## Latest Release
 Download the latest release v1.0.0 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.0/i3drsgm-1.0.0.exe)
 
