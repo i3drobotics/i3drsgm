@@ -1,8 +1,9 @@
 @echo off
 
+SETLOCAL
 :: set working directory to script directory
+SET initcwd=%cd%
 SET scriptpath=%~dp0
-echo %scriptpath:~0,-1%
 cd %scriptpath:~0,-1%
 
 :: url for downloading opencv
@@ -17,4 +18,9 @@ bitsadmin /transfer OpenCV_Download_Job /download /priority normal %url% %output
 %output% -o%outputfolder% -y
 :: delete downloaded file
 del %output%
-echo opencv install complete.
+echo OpenCV install complete.
+
+:: reset working directory
+cd %initcwd%
+
+ENDLOCAL
