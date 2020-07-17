@@ -10,7 +10,7 @@ Download the latest release v1.0.0 [here](https://github.com/i3drobotics/i3drsgm
  - OpenCV v3.4.1 (See setup instructions for details.)
  - PhobosIntegration v1.0.54 (See setup instructions for details.)
  - Z-zip (Used to package library into exe, see package instructions for details.)
- - Fetch (Portable app included in this repo. Used to fetch private github release files, see package instructions for details.)
+ - Fetch (Portable app included in this repo. Used to fetch private github release files, see setup instructions for details.)
 
 # Compatibility
 Tested on the following systems:
@@ -22,6 +22,8 @@ Tested on the following systems:
 Add a file to the scripts folder with the name 'token.txt'. Containing your GitHub public access token. 
 Double click 'install_3rdparty.bat' found in the scripts folder.
 This will download and install 3rd party libraries to the correct folders.
+
+This script uses a portable version of 'fetch' to download from private github releases. Find details [here](https://github.com/gruntwork-io/fetch.git)
 
 ### Manual setup
 #### OpenCV
