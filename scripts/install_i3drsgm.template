@@ -36,7 +36,7 @@ i3drsgm-%version%.exe -o"./" -y
 del i3drsgm-%version%.exe
 
 :: install opencv
-call i3drsgm\opencv-3.4.1\install_opencv.bat
+call i3drsgm\opencv-4.4.0\install_opencv.bat
 
 :: install phobosIntegration
 call i3drsgm\phobosIntegration-1.0.54\install_phobosIntegration.bat %token%

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # Define project
-project(I3DRSGM VERSION 1.0.3 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+project(I3DRSGM VERSION 1.0.4 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
 
 # Use 'Release' by default for build
 set(DEFAULT_BUILD_TYPE "Release")
@@ -19,7 +19,7 @@ include(GNUInstallDirs)
 add_definitions(-DI3DRSGM_EXPORT)
 
 # Define library source files
-set(SOURCE_FILES src/i3drsgm.cpp)
+set(SRC_FILES src/i3drsgm.cpp)
 
 # Use FindXXX.cmake files for finding libraries
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -29,7 +29,7 @@ find_package(PhobosIntegration REQUIRED)
 include_directories(${PhobosIntegration_INCLUDE_DIRS})
 
 # Build library
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${PhobosIntegration_LIBRARIES})
 
 # Include headers in library

@@ -17,7 +17,7 @@ mkdir install
 mkdir install\i3drsgm\i3drsgm-%version%
 :: build library
 cd build
-cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="..\install\i3drsgm\i3drsgm-%version%" -DPhobosIntegration_DIR="%cd%\..\3rdparty\phobosIntegration-1.0.54" -DOpenCV_DIR="%cd%\..\3rdparty\opencv-3.4.1\opencv\build" ..
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="..\install\i3drsgm\i3drsgm-%version%" -DPhobosIntegration_DIR="%cd%\..\3rdparty\phobosIntegration-1.0.54" -DOpenCV_DIR="%cd%\..\3rdparty\opencv-4.4.0\opencv\build" ..
 :: install library
 cmake --build . --config Release --target install
 

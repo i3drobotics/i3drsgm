@@ -28,8 +28,8 @@ mkdir install\i3drsgm\phobosIntegration-1.0.54\
 copy 3rdparty\phobosIntegration-1.0.54\install_phobosIntegration.bat install\i3drsgm\phobosIntegration-1.0.54\install_phobosIntegration.bat /Y
 copy 3rdparty\phobosIntegration-1.0.54\fetch.exe install\i3drsgm\phobosIntegration-1.0.54\fetch.exe /Y
 :: copy OpenCV download files to release folder
-mkdir install\i3drsgm\opencv-3.4.1\
-copy 3rdparty\opencv-3.4.1\install_opencv.bat install\i3drsgm\opencv-3.4.1\install_opencv.bat /Y
+mkdir install\i3drsgm\opencv-4.4.0\
+copy 3rdparty\opencv-4.4.0\install_opencv.bat install\i3drsgm\opencv-4.4.0\install_opencv.bat /Y
 :: create self-extracting exe
 cd install
 %z7path% a -sfx ../release/i3drsgm-%version%.exe i3drsgm
@@ -38,7 +38,7 @@ cd install
 cd ..
 rmdir install\i3drsgm\phobosIntegration-1.0.54 /s /q
 rmdir install\i3drsgm\cmake /s /q
-rmdir install\i3drsgm\opencv-3.4.1 /s /q
+rmdir install\i3drsgm\opencv-4.4.0 /s /q
 
 :: reset working directory
 cd %initcwd%
