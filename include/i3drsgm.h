@@ -18,6 +18,14 @@
 #include <fstream>
 #include <mutex>          // std::mutex
 
+#ifdef _WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#elif _linux__
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
+
 //!  I3DRSGM
 /*!
   Stereo matcher using I3DR's SGM algorithm
@@ -169,6 +177,8 @@ public:
      * \return disparity image */
     cv::Mat backwardMatch(cv::Mat left, cv::Mat right);
 
+    static std::string getexepath();
+
 private:
     //! Matcher handle
     /*! TSTEREOHANDLE from JR library */
@@ -226,5 +236,16 @@ private:
     bool EditPyramidParamRaw(std::vector<std::string> *lines, int pyramid_num,std::string param_name,std::string param_value,bool is_subpix=false);
 
 };
+
+// extern "C" {
+
+//     I3DRSGM_EXPORTS const char* GetExePath(void);
+//     I3DRSGM_EXPORTS bool TestLicense(void);
+//     //I3DRSGM_EXPORTS cv::Mat* TestMatch(unsigned char* left_ptr, unsigned char* right_ptr ,int height, int width, int type);
+//     I3DRSGM_EXPORTS cv::Mat* MatchFilename(I3DRSGM* matcher_ptr, char* left_filename, char* right_filename);
+//     I3DRSGM_EXPORTS I3DRSGM* CreateMatcher();
+//     I3DRSGM_EXPORTS cv::Mat* MatchBMFilename(cv::StereoBM* matcher_ptr, char* left_filename, char* right_filename);
+//     I3DRSGM_EXPORTS cv::StereoBM* CreateMatcherBM();
+// }
 
 #endif  // I3DRSGM_H

@@ -138,7 +138,7 @@ int I3DRSGM::getErrorDisparity(void)
 //compute disparity
 cv::Mat I3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 {
-    cv::Mat oDisparity;
+    cv::Mat oDisparity = cv::Mat();
     std::cout << "[I3DRSGM] Starting match..." << std::endl;
     const std::lock_guard<std::mutex> lock(mtx);
     if (matcher_handle != nullptr)
@@ -642,3 +642,100 @@ int I3DRSGM::createMatcher()
     }
     return -1;
 }
+
+std::string I3DRSGM::getexepath()
+{
+    char cCurrentPath[FILENAME_MAX];
+    GetCurrentDir(cCurrentPath, sizeof(cCurrentPath));
+    cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
+    return std::string(cCurrentPath);
+}
+
+// extern "C" {
+//     bool TestLicense()
+//     {
+//         bool valid = I3DRSGM::isLicenseValid();
+//         return valid;
+//     }
+
+//     const char* GetExePath()
+//     {
+//         return I3DRSGM::getexepath().c_str();
+//     }
+
+//     I3DRSGM* CreateMatcher(){
+//         //freopen("i3drsgm_log.txt","a",stdout);
+//         //freopen("i3drsgm_err.txt","a",stderr);
+//         std::string tmp_param_filepath = "i3drsgm_tmp.param";
+//         std::string param_filepath = "i3drsgm.param";
+//         //fclose(stdout);
+//         //fclose(stderr);
+//         return new I3DRSGM(tmp_param_filepath,param_filepath);
+//     }
+
+//     cv::StereoBM* CreateMatcherBM(){
+//         //freopen("i3drsgm_log.txt","a",stdout);
+//         //freopen("i3drsgm_err.txt","a",stderr);
+//         cv::StereoBM* matcher = cv::StereoBM::create(0,15);
+//         return cv::StereoBM::create(0,15);
+//     }
+
+//     cv::Mat* MatchBMFilename(cv::StereoBM* matcher_ptr, char* left_filename, char* right_filename){
+//         freopen("i3drsgm_log.txt","a",stdout);
+//         freopen("i3drsgm_err.txt","a",stderr);
+//         std::cout << "Reading data from input..." << std::endl;
+//         cv::Mat left = cv::imread(left_filename, cv::IMREAD_UNCHANGED);
+//         cv::Mat right = cv::imread(right_filename, cv::IMREAD_UNCHANGED);
+//         std::cout << "Computing disparity..." << std::endl;
+//         cv::Mat disp;
+//         matcher_ptr->compute(left,right,disp);
+//         std::cout << "Disparity size: " << disp.size().width << "x" << disp.size().height << std::endl;
+//         fclose(stdout);
+//         fclose(stderr);
+//         return new cv::Mat(disp);
+//     }
+
+//     cv::Mat* MatchFilename(I3DRSGM* matcher_ptr, char* left_filename, char* right_filename){
+//         freopen("i3drsgm_log.txt","a",stdout);
+//         freopen("i3drsgm_err.txt","a",stderr);
+//         std::cout << "Reading data from input..." << std::endl;
+//         cv::Mat left = cv::imread(left_filename, cv::IMREAD_UNCHANGED);
+//         cv::Mat right = cv::imread(right_filename, cv::IMREAD_UNCHANGED);
+//         std::cout << "Computing disparity..." << std::endl;
+//         cv::Mat disp = matcher_ptr->forwardMatch(left,right);
+//         std::cout << "Disparity size: " << disp.size().width << "x" << disp.size().height << std::endl;
+//         fclose(stdout);
+//         fclose(stderr);
+//         return new cv::Mat(disp);
+//     }
+
+//     // cv::Mat* TestMatch(unsigned char* left_ptr, unsigned char* right_ptr, int height, int width, int type){
+//     //     freopen("i3drsgm_log.txt","w",stdout);
+//     //     freopen("i3drsgm_err.txt","w",stderr);
+//     //     std::cout << "Reading data from input..." << std::endl;
+//     //     cv::Mat left = cv::Mat(height, width, type, (void*)left_ptr, cv::Mat::AUTO_STEP);
+//     //     cv::Mat right = cv::Mat(height, width, type, (void*)right_ptr, cv::Mat::AUTO_STEP);
+//     //     cv::Mat disp;
+//     //     /*
+//     //     if (I3DRSGM::isLicenseValid()){
+//     //         // initalise matcher with param files
+//     //         std::string tmp_param_filepath = "i3drsgm_tmp.param";
+//     //         std::string param_filepath = "i3drsgm.param";
+//     //         I3DRSGM* i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
+//     //         std::cout << "Left size: " << left_in.size().width << "x" << left_in.size().height << std::endl;
+//     //         disp = i3drsgm->forwardMatch(left_in,right_in);
+//     //         //delete(i3drsgm);
+//     //     } else {
+//     //         */
+//     //         //std::cout << "Failed to find license to use I3DRSGM will use OpenCV's Block Matcher instead" << std::endl;
+//     //         std::cout << "Initalising stereo matcher..." << std::endl;
+//     //         //cv::StereoBM* matcher = cv::Ptr<cv::StereoBM>(matcher_ptr);
+//     //         cv::StereoBM* matcher = cv::StereoBM::create(0,15);
+//     //         std::cout << "Computing stereo match..." << std::endl;
+//     //         matcher->compute(left, right, disp);
+//     //         //delete(matcher);
+//     //     //}
+//     //     std::cout << "Disparity size: " << disp.size().width << "x" << disp.size().height << std::endl;
+//     //     return new cv::Mat(disp);
+//     // }
+// }
