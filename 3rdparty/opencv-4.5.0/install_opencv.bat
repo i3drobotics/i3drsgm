@@ -7,11 +7,11 @@ SET scriptpath=%~dp0
 cd %scriptpath:~0,-1%
 
 :: url for downloading opencv
-SET url="https://netix.dl.sourceforge.net/project/opencvlibrary/4.4.0/opencv-4.4.0-vc14_vc15.exe"
+SET url="https://deac-fra.dl.sourceforge.net/project/opencvlibrary/4.5.0/opencv-4.5.0-vc14_vc15.exe"
 :: output folder where donwload is placed
 SET outputfolder="%cd%"
 :: full output filepath
-SET output="%outputfolder%\opencv-4.4.0-vc14_vc15.exe"
+SET output="%outputfolder%\opencv-4.5.0-vc14_vc15.exe"
 :: download opencv from url
 bitsadmin /transfer OpenCV_Download_Job /download /priority normal %url% %output%
 :: extract self-exracting archive
