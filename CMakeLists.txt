@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.9)
 # Define project
 project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
 
+option(BUILD_APP "Build app" ON)
+
 # Use 'Release' by default for build
 set(DEFAULT_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -20,7 +22,9 @@ include(GNUInstallDirs)
 
 # Define library source files
 set(LIB_SRC_FILES src/i3drsgm.cpp)
-set(APP_SRC_FILES src/i3drsgmApp.cpp)
+if(BUILD_APP)
+    set(APP_SRC_FILES src/i3drsgmApp.cpp)
+endif()
 #set(SRC_FILES src/mog2.cpp)
 
 # Use FindXXX.cmake files for finding libraries
@@ -35,9 +39,11 @@ add_library(lib${PROJECT_NAME} SHARED ${LIB_SRC_FILES})
 target_link_libraries(lib${PROJECT_NAME} ${PhobosIntegration_LIBRARIES})
 target_compile_definitions(lib${PROJECT_NAME} PRIVATE I3DRSGM_EXPORT)
 
-# Build simple app
-add_executable(${PROJECT_NAME}App ${APP_SRC_FILES})
-target_link_libraries(${PROJECT_NAME}App PRIVATE lib${PROJECT_NAME})
+if(BUILD_APP)
+    # Build simple app
+    add_executable(${PROJECT_NAME}App ${APP_SRC_FILES})
+    target_link_libraries(${PROJECT_NAME}App PRIVATE lib${PROJECT_NAME})
+endif()
 
 # Include headers in library
 target_include_directories(lib${PROJECT_NAME} PUBLIC
@@ -60,44 +66,52 @@ install(TARGETS lib${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
 # Install cmake config in install folder
-install(EXPORT lib${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
+install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
 
 # Install cmake targets in install folder
 export(TARGETS lib${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
 
-# Install app in bin folder
-install(TARGETS ${PROJECT_NAME}App DESTINATION bin)
+if(BUILD_APP)
+    # Install app in bin folder
+    install(TARGETS ${PROJECT_NAME}App DESTINATION bin)
+endif()
 
 # Install param files to bin folder
 install(DIRECTORY params/ DESTINATION bin)
 
-# Define input params (will be copied to install folder)
-set(INPUT_PARAMS ${PROJECT_SOURCE_DIR}/resources/input.yaml)
+if(BUILD_APP)
+    # Define OpenCV dlls (will be copied to install folder)
+    set(OpenCV_DLLS
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_world450.dll
+        ${OpenCV_DIR}/bin/opencv_ffmpeg450_64.dll
+    )
+    # Define resource files (will be copied to install folder)
+    file(GLOB RESOURCE_FILES
+        "${PROJECT_SOURCE_DIR}/resources/*.png"
+        "${PROJECT_SOURCE_DIR}/resources/*.yaml"
+    )
 
-# Define OpenCV dlls (will be copied to install folder)
-set(OpenCV_DLLS
-    ${OpenCV_DIR}/x64/vc15/bin/opencv_world450.dll
-    ${OpenCV_DIR}/bin/opencv_ffmpeg450_64.dll
-)
 
-# QT dlls required if not using your own QT dlls
-# seperated into a different folder to avoid conficts
-file(GLOB PhobosIntegration_DLLS
-    "${PhobosIntegration_DIR}/bin/*.dll"
-    "${PhobosIntegration_DIR}/qt/*.dll"
-)
+    # QT dlls required if not using your own QT dlls
+    # seperated into a different folder to avoid conficts
+    file(GLOB PhobosIntegration_DLLS
+        "${PhobosIntegration_DIR}/bin/*.dll"
+        "${PhobosIntegration_DIR}/qt/*.dll"
+    )
 
-# Copy files to build directory
-add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenCV_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${INPUT_PARAMS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-    COMMENT "Copying extra files to build..."
-)
+    # Copy files to build directory
+    add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenCV_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+        COMMENT "Copying extra files to build..."
+    )
 
-# Install OpenCV dlls in install directory
-install(FILES ${OpenCV_DLLS} DESTINATION bin)
-# Install PhobosIntegration dlls in install directory
-install(FILES ${PhobosIntegration_DLLS} DESTINATION bin)
-# Install input params in install directory
-install(FILES ${INPUT_PARAMS} DESTINATION bin)
+    # Install OpenCV dlls in install directory
+    install(FILES ${OpenCV_DLLS} DESTINATION bin)
+    # Install PhobosIntegration dlls in install directory
+    install(FILES ${PhobosIntegration_DLLS} DESTINATION bin)
+    # Install resource files in install directory
+    install(FILES ${RESOURCE_FILES} DESTINATION bin/resources)
+
+endif()

@@ -13,10 +13,10 @@
 
 #include "i3drsgmExport.h"
 #include <PhobosIntegration/PhobosIntegration.hpp>
+#include "stereosupport.hpp"
 #include <iostream>
 #include <fstream>
 #include <mutex>          // std::mutex
-
 #ifdef _WIN32
     #include <direct.h>
     #define GetCurrentDir _getcwd
@@ -70,8 +70,24 @@ public:
         JR::Phobos::TSTEREOHANDLE tmp_matcher_handle = nullptr;
         JR::Phobos::SMatchingParametersInput tmp_params = JR::Phobos::SMatchingParametersInput();
         tmp_matcher_handle = JR::Phobos::CreateMatchStereoHandle(tmp_params);
-        return (tmp_matcher_handle != nullptr);
+        bool valid = tmp_matcher_handle != nullptr;
+        if (!valid){
+            std::string hostname, hostid;
+            getHostInfo(hostname,hostid);
+            std::cerr << "Invalid license. Please place license file in the following directory: " << std::endl;
+            std::cerr << "'"<< getexepath() << "'" << std::endl;
+            std::cerr << std::endl;
+            std::cerr << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
+            std::cerr << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
+        }
+        return (valid);
     }
+
+    static bool forwardMatchFiles(
+        std::string left_image_filepath, std::string right_image_filepath, 
+        std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
+        std::string output_folder,bool preRectified=false
+    );
 
     //! Get error disparity
     /*! \return value used to represent a match error */
