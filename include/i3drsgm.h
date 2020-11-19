@@ -1,5 +1,4 @@
-#ifndef I3DRSGM_H
-#define I3DRSGM_H
+#pragma once
 
 /**
  * @file i3drsgm.h
@@ -248,4 +247,4 @@ private:
 //     I3DRSGM_EXPORTS cv::StereoBM* CreateMatcherBM();
 // }
 
-#endif  // I3DRSGM_H
+//#endif  // I3DRSGM_H

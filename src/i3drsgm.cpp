@@ -11,6 +11,8 @@
  *
  */
 
+
+
 //Initialise matcher
 I3DRSGM::I3DRSGM(std::string tmp_param_file, std::string param_file)
 {
@@ -649,6 +651,24 @@ std::string I3DRSGM::getexepath()
     GetCurrentDir(cCurrentPath, sizeof(cCurrentPath));
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
     return std::string(cCurrentPath);
+}
+
+extern "C" {
+    I3DRSGM_EXPORTS void cvinout(
+            int rows_in, int cols_in, const int cvtype_in, void *buffer_in, 
+            int rows_out, int cols_out, const int cvtype_out, void *buffer_out
+        ) {
+        cv::Mat img_in(cv::Size(rows_in, cols_in), cvtype_in, buffer_in);
+        cv::Mat img_out(cv::Size(rows_out, cols_out), cvtype_out, buffer_out);
+        img_in.convertTo(img_out, cvtype_out);
+    }
+
+    I3DRSGM_EXPORTS bool TestLicense()
+    {
+         bool valid = I3DRSGM::isLicenseValid();
+         //bool valid = true;
+         return valid;
+    }
 }
 
 // extern "C" {

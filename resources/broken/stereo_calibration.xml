@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<R>""</R>
+<T>""</T>
+<Q type_id="opencv-matrix">
+  <rows>4</rows>
+  <cols>4</cols>
+  <dt>d</dt>
+  <data>
+    1. 0. 0. -1224. 0. 1. 0. -1024. 0. 0. 0. 3.4782608695652175e+03 0.
+    0. 10. 0.</data></Q>
+<E>""</E>
+<F>""</F>
+<rms_error>""</rms_error>
+</opencv_storage>
