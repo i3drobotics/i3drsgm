@@ -695,6 +695,12 @@ bool I3DRSGM::forwardMatchFiles(
         return false;
     }
 
+    #if defined(_WIN32)
+        _mkdir(output_folder.c_str());
+    #else 
+        mkdir(output_folder.c_str(), 0777);
+    #endif
+
     if (!preRectified){
         // rectify input images
         std::cout << "Rectifying images..." << std::endl;
@@ -706,8 +712,8 @@ bool I3DRSGM::forwardMatchFiles(
     std::cout << "Generating disparity from stereo pair..." << std::endl;
     cv::Mat disp = i3drsgm->forwardMatch(left,right);
 
-    cv::imwrite(output_folder+"/disparity.tiff",disp);
-    std::cout << "Disparity saved to: " << output_folder+"/disparity.tiff" << std::endl;
+    cv::imwrite(output_folder+"/disparity.tif",disp);
+    std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
 
     /*
     TODO
