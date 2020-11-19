@@ -3,7 +3,8 @@ import numpy as np
 import os
 
 if __name__ == '__main__':
-    I3DRSGMApp = 'C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGMApp.exe'
+    PROJECT_SOURCE_DIR = os.path.dirname(os.path.realpath(__file__))
+    I3DRSGMApp = PROJECT_SOURCE_DIR+'/../install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGMApp.exe'
     os.system(I3DRSGMApp)
 
 '''
@@ -13,9 +14,9 @@ import cvtypes
 from ctypes import cdll, c_void_p, c_long
 import cv2
 
-TODO: Fix issue of missing dlls when importing I3DRSGM.dll
+///TODO: Fix issue of missing dlls when importing I3DRSGM.dll
 print("Loading I3DRSGM library...")
-libI3DRSGM = C.cdll.LoadLibrary('C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGM.dll')
+libI3DRSGM = C.cdll.LoadLibrary('C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/libI3DRSGM.dll')
 print("I3DRSGM library load complete")
 
 #def TestLicense():
