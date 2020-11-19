@@ -83,7 +83,8 @@ if(BUILD_APP)
     # Define OpenCV dlls (will be copied to install folder)
     set(OpenCV_DLLS
         ${OpenCV_DIR}/x64/vc15/bin/opencv_world450.dll
-        ${OpenCV_DIR}/bin/opencv_ffmpeg450_64.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_ffmpeg450_64.dll
+        ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_msmf450_64.dll
     )
     # Define resource files (will be copied to install folder)
     file(GLOB RESOURCE_FILES
