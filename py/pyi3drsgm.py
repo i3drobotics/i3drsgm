@@ -1,12 +1,19 @@
+import cv2
+import numpy as np
+import os
+
+if __name__ == '__main__':
+    I3DRSGMApp = 'C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGMApp.exe'
+    os.system(I3DRSGMApp)
+
+'''
 import numpy as np
 import ctypes as C
 import cvtypes
 from ctypes import cdll, c_void_p, c_long
 import cv2
 
-import os
-os.environ['PATH'] = 'C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/' + os.environ['PATH']
-
+TODO: Fix issue of missing dlls when importing I3DRSGM.dll
 print("Loading I3DRSGM library...")
 libI3DRSGM = C.cdll.LoadLibrary('C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGM.dll')
 print("I3DRSGM library load complete")
@@ -58,4 +65,4 @@ if __name__ == '__main__':
                 break
     else:
         print("I3DRSGM license invalid")
-    
+'''

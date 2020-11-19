@@ -17,3 +17,4 @@
 /3rdparty/phobosIntegration-1.0.54/qt
 /.vscode
 *__pycache__*
+*.tmp
