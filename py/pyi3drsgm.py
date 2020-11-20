@@ -7,12 +7,12 @@ class pyI3DRSGM:
     def __init__(self,left_cal_filepath, right_cal_filepath, output_folder):
         self.left_cal_filepath, self.right_cal_filepath, self.output_folder = left_cal_filepath, right_cal_filepath, output_folder
         self.script_folder = os.path.dirname(os.path.realpath(__file__))
-        self.I3DRSGMApp = script_folder+'/../I3DRSGMApp.exe'
-        cmd = [self.I3DRSGMApp, "api"]
+        I3DRSGMApp = self.script_folder+'/../I3DRSGMApp.exe'
+        cmd = [I3DRSGMApp, "api"]
         self.appProcess = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         self.apiRequest("INIT")
 
-    def remove_prefix(self,text, prefix):
+    def removePrefix(self,text, prefix):
         if text.startswith(prefix):
             return text[len(prefix):]
         return text  # or whatever
@@ -24,14 +24,12 @@ class pyI3DRSGM:
             if (line_str  == "API_READY\r\n"):
                 return True,line_str
             elif (line_str.startswith("API_RESPONSE:")):
-                response = self.remove_prefix(line_str,"API_RESPONSE:")
+                response = self.removePrefix(line_str,"API_RESPONSE:")
                 if (response.startswith("ERROR,")):
-                    error_msg = self.remove_prefix(response,"API_RESPONSE:")
+                    error_msg = self.removePrefix(response,"API_RESPONSE:")
                     return False,error_msg
                 else:
                     return True,response
-            elif (line_str == ""):
-                return False,line_str
             else:
                 print("stout:"+line_str)
 
@@ -46,7 +44,6 @@ class pyI3DRSGM:
         return valid,response
 
     def forwardMatchFiles(self, left_filepath, right_filepath):
-        #cmd = [self.I3DRSGMApp, left_filepath, right_filepath, left_cal_filepath, right_cal_filepath, output_folder, "0", "1"]
         appOptions="FORWARD_MATCH,"+left_filepath+","+right_filepath+","+self.left_cal_filepath+","+self.right_cal_filepath+","+self.output_folder+",0,1"
         valid,response = self.apiRequest(appOptions)
         print(response)
