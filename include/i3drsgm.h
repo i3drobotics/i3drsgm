@@ -77,11 +77,11 @@ public:
         if (!valid){
             std::string hostname, hostid;
             getHostInfo(hostname,hostid);
-            std::cerr << "Invalid license. Please place license file in the following directory: " << std::endl;
-            std::cerr << "'"<< getAppPath() << "'" << std::endl;
-            std::cerr << std::endl;
-            std::cerr << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
-            std::cerr << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
+            std::cout << "Invalid license. Please place license file in the following directory: " << std::endl;
+            std::cout << "'"<< getAppPath() << "'" << std::endl;
+            std::cout << std::endl;
+            std::cout << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
+            std::cout << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
         }
         return (valid);
     }

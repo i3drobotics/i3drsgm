@@ -1,9 +1,26 @@
 cmake_minimum_required(VERSION 3.9)
 
+option(BUILD_CSHARP "Build C#" ON)
+
 # Define project
-project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+if(BUILD_CSHARP)
+    project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX CSharp)
+    if(NOT MSVC)
+        message(FATAL_ERROR "This CMake files only works with MSVC due to building C#.")
+    endif(NOT MSVC)
+else(BUILD_CSHARP)
+    project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+endif(BUILD_CSHARP)
+
+string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
+string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER)
 
 option(BUILD_APP "Build app" ON)
+if(BUILD_APP)
+    message("BUILD APP: ON")
+else()
+    message("BUILD APP: OFF")
+endif()
 
 # Use 'Release' by default for build
 set(DEFAULT_BUILD_TYPE "Release")
@@ -24,7 +41,14 @@ include(GNUInstallDirs)
 set(LIB_SRC_FILES src/i3drsgm.cpp)
 if(BUILD_APP)
     set(APP_SRC_FILES src/i3drsgmApp.cpp)
-endif()
+endif(BUILD_APP)
+
+if(BUILD_CSHARP)
+    set(CSHARP_SRC_FILES src/I3DRSGMSharp.cs)
+    if(BUILD_APP)
+        set(CSHARP_APP_SRC_FILES src/I3DRSGMSharpApp.cs)
+    endif(BUILD_APP)
+endif(BUILD_CSHARP)
 #set(SRC_FILES src/mog2.cpp)
 
 # Use FindXXX.cmake files for finding libraries
@@ -43,7 +67,21 @@ if(BUILD_APP)
     # Build simple app
     add_executable(${PROJECT_NAME}App ${APP_SRC_FILES})
     target_link_libraries(${PROJECT_NAME}App PRIVATE lib${PROJECT_NAME})
-endif()
+endif(BUILD_APP)
+
+if(BUILD_CSHARP)
+    # Build simple app
+    add_library(${PROJECT_NAME_UPPER}Sharp SHARED ${CSHARP_SRC_FILES})
+    set_property(TARGET ${PROJECT_NAME_UPPER}Sharp PROPERTY VS_DOTNET_REFERENCES
+        "Microsoft.CSharp"
+        "System"
+        "System.Diagnostics"
+    )
+    if(BUILD_APP)
+        add_executable(${PROJECT_NAME_UPPER}SharpApp ${CSHARP_APP_SRC_FILES})
+        target_link_libraries(${PROJECT_NAME_UPPER}SharpApp PRIVATE ${PROJECT_NAME_UPPER}Sharp)
+    endif(BUILD_APP)
+endif(BUILD_CSHARP)
 
 # Include headers in library
 target_include_directories(lib${PROJECT_NAME} PUBLIC
@@ -62,6 +100,12 @@ install(TARGETS lib${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+# Export cmake config
+install(TARGETS ${PROJECT_NAME_UPPER}Sharp EXPORT ${PROJECT_NAME_UPPER}SharpConfig
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 # Install headers in install folder
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
@@ -74,15 +118,18 @@ export(TARGETS lib${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
 if(BUILD_APP)
     # Install app in bin folder
     install(TARGETS ${PROJECT_NAME}App DESTINATION bin)
-endif()
+    if(BUILD_CSHARP)
+        install(TARGETS ${PROJECT_NAME_UPPER}SharpApp DESTINATION bin)
+    endif(BUILD_CSHARP)
+endif(BUILD_APP)
 
 # Define param files
 file(GLOB PARAM_FILES
     "${PROJECT_SOURCE_DIR}/params/*.param"
 )
 
-add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+add_custom_command(TARGET lib${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:lib${PROJECT_NAME}>
     COMMENT "Copying files to build..."
 )
 
@@ -114,15 +161,15 @@ if(BUILD_APP)
     )
 
     # Copy files to build directory
-    add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenCV_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
-        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PYTHON_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
-        COMMENT "Copying extra files to build..."
-    )
+    # add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenCV_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+    #     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
+    #     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PYTHON_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
+    #     COMMENT "Copying extra files to build..."
+    # )
 
     # Install OpenCV dlls in install directory
     install(FILES ${OpenCV_DLLS} DESTINATION bin)
