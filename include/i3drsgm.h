@@ -19,9 +19,12 @@
 #include <mutex>          // std::mutex
 #ifdef _WIN32
     #include <direct.h>
+    #include <windows.h>
     #define GetCurrentDir _getcwd
 #elif _linux__
     #include <unistd.h>
+    #include <limits.h>
+    #include <unistd.h>     //readlink
     #define GetCurrentDir getcwd
 #endif
 
@@ -75,7 +78,7 @@ public:
             std::string hostname, hostid;
             getHostInfo(hostname,hostid);
             std::cerr << "Invalid license. Please place license file in the following directory: " << std::endl;
-            std::cerr << "'"<< getexepath() << "'" << std::endl;
+            std::cerr << "'"<< getAppPath() << "'" << std::endl;
             std::cerr << std::endl;
             std::cerr << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
             std::cerr << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
@@ -198,7 +201,8 @@ public:
      * \return disparity image */
     cv::Mat backwardMatch(cv::Mat left, cv::Mat right);
 
-    static std::string getexepath();
+    static std::string getCWD();
+    static std::string getAppPath();
 
 private:
     //! Matcher handle

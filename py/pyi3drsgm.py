@@ -31,18 +31,18 @@ class pyI3DRSGM:
                 else:
                     return True,response
             elif (line_str == ""):
-                print("empty response")
                 return False,line_str
             else:
                 print("stout:"+line_str)
 
     def apiRequest(self,cmd):
         valid,response = self.apiWaitResponse()
-        print("sending api request...")
-        self.appProcess.stdin.write((cmd+"\n").encode())
-        self.appProcess.stdin.flush()
-        print("waiting for api response...")
-        valid,response = self.apiWaitResponse()
+        if (valid):
+            print("sending api request...")
+            self.appProcess.stdin.write((cmd+"\n").encode())
+            self.appProcess.stdin.flush()
+            print("waiting for api response...")
+            valid,response = self.apiWaitResponse()
         return valid,response
 
     def forwardMatchFiles(self, left_filepath, right_filepath):

@@ -119,10 +119,8 @@ if(BUILD_APP)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
         COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PYTHON_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
         COMMENT "Copying extra files to build..."
     )
 
@@ -135,7 +133,5 @@ if(BUILD_APP)
     install(FILES ${RESOURCE_FILES} DESTINATION bin/resources)
     # Install resource files in py directory
     install(FILES ${PYTHON_FILES} DESTINATION bin/py)
-    install(FILES ${PARAM_FILES} DESTINATION bin/py)
-    install(FILES ${PARAM_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/scripts)
 
 endif()

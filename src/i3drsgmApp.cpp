@@ -46,8 +46,8 @@ int main(int argc, char *argv[]){
         std::cout << argc << " arguments" << std::endl;
         return 1;
     }
-    std::string tmp_param_filepath = I3DRSGM::getexepath()+"/i3drsgm_tmp.param";
-    std::string param_filepath = I3DRSGM::getexepath()+"/i3drsgm.param";
+    std::string tmp_param_filepath = I3DRSGM::getAppPath()+"/i3drsgm_tmp.param";
+    std::string param_filepath = I3DRSGM::getAppPath()+"/i3drsgm.param";
 
     I3DRSGM * i3drsgm;
 

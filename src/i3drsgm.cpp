@@ -645,12 +645,24 @@ int I3DRSGM::createMatcher()
     return -1;
 }
 
-std::string I3DRSGM::getexepath()
-{
+std::string I3DRSGM::getCWD(){
     char cCurrentPath[FILENAME_MAX];
     GetCurrentDir(cCurrentPath, sizeof(cCurrentPath));
     cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
     return std::string(cCurrentPath);
+}
+
+std::string I3DRSGM::getAppPath()
+{
+    #ifdef _WIN32
+        char path[MAX_PATH] = { 0 };
+        GetModuleFileNameA(NULL, path, MAX_PATH);
+        return std::string(path);
+    #else
+        char result[PATH_MAX];
+        ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+        return std::string(result, (count > 0) ? count : 0);
+    #endif
 }
 
 bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
@@ -760,8 +772,8 @@ bool I3DRSGM::forwardMatchFiles(
 {
     if (!I3DRSGM::isLicenseValid()){return false;}
 
-    std::string tmp_param_filepath = getexepath()+"/i3drsgm_tmp.param";
-    std::string param_filepath = getexepath()+"/i3drsgm.param";
+    std::string tmp_param_filepath = getAppPath()+"/i3drsgm_tmp.param";
+    std::string param_filepath = getAppPath()+"/i3drsgm.param";
     // initalise matcher with param files
     I3DRSGM * i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
 
