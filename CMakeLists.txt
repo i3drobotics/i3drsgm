@@ -76,8 +76,17 @@ if(BUILD_APP)
     install(TARGETS ${PROJECT_NAME}App DESTINATION bin)
 endif()
 
-# Install param files to bin folder
-install(DIRECTORY params/ DESTINATION bin)
+# Define param files
+file(GLOB PARAM_FILES
+    "${PROJECT_SOURCE_DIR}/params/*.param"
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+    COMMENT "Copying files to build..."
+)
+
+install(FILES ${PARAM_FILES} DESTINATION bin)
 
 if(BUILD_APP)
     # Define OpenCV dlls (will be copied to install folder)
@@ -92,7 +101,6 @@ if(BUILD_APP)
         "${PROJECT_SOURCE_DIR}/resources/*.yaml"
     )
 
-
     # QT dlls required if not using your own QT dlls
     # seperated into a different folder to avoid conficts
     file(GLOB PhobosIntegration_DLLS
@@ -100,11 +108,21 @@ if(BUILD_APP)
         "${PhobosIntegration_DIR}/qt/*.dll"
     )
 
+    # Define python files
+    file(GLOB PYTHON_FILES
+        "${PROJECT_SOURCE_DIR}/py/*.py"
+    )
+
     # Copy files to build directory
     add_custom_command(TARGET ${PROJECT_NAME}App POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OpenCV_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PhobosIntegration_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/resources
+        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PYTHON_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}App>/py
         COMMENT "Copying extra files to build..."
     )
 
@@ -113,6 +131,11 @@ if(BUILD_APP)
     # Install PhobosIntegration dlls in install directory
     install(FILES ${PhobosIntegration_DLLS} DESTINATION bin)
     # Install resource files in install directory
+    install(DIRECTORY DESTINATION bin/resources)
     install(FILES ${RESOURCE_FILES} DESTINATION bin/resources)
+    # Install resource files in py directory
+    install(FILES ${PYTHON_FILES} DESTINATION bin/py)
+    install(FILES ${PARAM_FILES} DESTINATION bin/py)
+    install(FILES ${PARAM_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/scripts)
 
 endif()

@@ -30,5 +30,3 @@ cd %initcwd%
 
 :: complete message
 echo Build complete.
-
-pause

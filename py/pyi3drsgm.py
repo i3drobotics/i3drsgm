@@ -1,11 +1,85 @@
 import cv2
 import numpy as np
+import subprocess
 import os
 
+class pyI3DRSGM:
+    def __init__(self,left_cal_filepath, right_cal_filepath, output_folder):
+        self.left_cal_filepath, self.right_cal_filepath, self.output_folder = left_cal_filepath, right_cal_filepath, output_folder
+        self.script_folder = os.path.dirname(os.path.realpath(__file__))
+        self.I3DRSGMApp = script_folder+'/../I3DRSGMApp.exe'
+        cmd = [self.I3DRSGMApp, "api"]
+        self.appProcess = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.apiRequest("INIT")
+
+    def remove_prefix(self,text, prefix):
+        if text.startswith(prefix):
+            return text[len(prefix):]
+        return text  # or whatever
+
+    def apiWaitResponse(self):
+        while(True):
+            line = self.appProcess.stdout.readline()
+            line_str = line.decode("utf-8")
+            if (line_str  == "API_READY\r\n"):
+                return True,line_str
+            elif (line_str.startswith("API_RESPONSE:")):
+                response = self.remove_prefix(line_str,"API_RESPONSE:")
+                if (response.startswith("ERROR,")):
+                    error_msg = self.remove_prefix(response,"API_RESPONSE:")
+                    return False,error_msg
+                else:
+                    return True,response
+            elif (line_str == ""):
+                print("empty response")
+                return False,line_str
+            else:
+                print("stout:"+line_str)
+
+    def apiRequest(self,cmd):
+        valid,response = self.apiWaitResponse()
+        print("sending api request...")
+        self.appProcess.stdin.write((cmd+"\n").encode())
+        self.appProcess.stdin.flush()
+        print("waiting for api response...")
+        valid,response = self.apiWaitResponse()
+        return valid,response
+
+    def forwardMatchFiles(self, left_filepath, right_filepath):
+        #cmd = [self.I3DRSGMApp, left_filepath, right_filepath, left_cal_filepath, right_cal_filepath, output_folder, "0", "1"]
+        appOptions="FORWARD_MATCH,"+left_filepath+","+right_filepath+","+self.left_cal_filepath+","+self.right_cal_filepath+","+self.output_folder+",0,1"
+        valid,response = self.apiRequest(appOptions)
+        print(response)
+        return valid
+
+    def forwardMatch(self, left_img, right_img):
+        if not os.path.exists(self.script_folder+"/../tmp/"):
+            os.makedirs(self.script_folder+"/../tmp/")
+        left_filepath=self.script_folder+"/../tmp/left_tmp.png"
+        right_filepath=self.script_folder+"/../tmp/right_tmp.png"
+        disp_filepath=self.output_folder+"/disparity.tif"
+        cv2.imwrite(left_filepath,left_img)
+        cv2.imwrite(right_filepath,right_img)
+        valid = self.forwardMatchFiles(left_filepath,right_filepath)
+        disp = None
+        if (valid):
+            disp = cv2.imread(disp_filepath,-1)
+        return valid,disp
+
+    def close(self):
+        self.appProcess.terminate()
+
 if __name__ == '__main__':
-    PROJECT_SOURCE_DIR = os.path.dirname(os.path.realpath(__file__))
-    I3DRSGMApp = PROJECT_SOURCE_DIR+'/../install/i3drsgm/i3drsgm-1.0.6/bin/I3DRSGMApp.exe'
-    os.system(I3DRSGMApp)
+    script_folder = os.path.dirname(os.path.realpath(__file__))
+    resource_folder = script_folder+"/../resources"
+    i3drsgm = pyI3DRSGM(resource_folder+"/left.yaml",resource_folder+"/right.yaml",resource_folder+"/output")
+    valid = True
+    left_img = cv2.imread(resource_folder+"/left.png")
+    right_img = cv2.imread(resource_folder+"/right.png")
+    while(valid):
+        #valid = i3drsgm.forwardMatchFiles(resource_folder+"/left.png",resource_folder+"/right.png")
+        valid,disp = i3drsgm.forwardMatch(left_img,right_img)
+    i3drsgm.close()
 
 '''
 import numpy as np
@@ -14,7 +88,7 @@ import cvtypes
 from ctypes import cdll, c_void_p, c_long
 import cv2
 
-///TODO: Fix issue of missing dlls when importing I3DRSGM.dll
+#TODO: Fix issue of missing dlls when importing I3DRSGM.dll
 print("Loading I3DRSGM library...")
 libI3DRSGM = C.cdll.LoadLibrary('C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/libI3DRSGM.dll')
 print("I3DRSGM library load complete")

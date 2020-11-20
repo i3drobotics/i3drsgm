@@ -653,24 +653,27 @@ std::string I3DRSGM::getexepath()
     return std::string(cCurrentPath);
 }
 
-bool I3DRSGM::forwardMatchFiles(
+bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
     std::string left_image_filepath, std::string right_image_filepath, 
     std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
     std::string output_folder, bool preRectified)
 {
-    if (!I3DRSGM::isLicenseValid()){return false;}
-    
-    std::string tmp_param_filepath = getexepath()+"/i3drsgm_tmp.param";
-    std::string param_filepath = getexepath()+"/i3drsgm.param";
-    // initalise matcher with param files
-    I3DRSGM * i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
-
     cv::Mat left, right;
     // check image files exist
     if (cv::utils::fs::exists(left_image_filepath) && cv::utils::fs::exists(right_image_filepath)){
         // read left and right image from file to OpenCV Mat
-        left = cv::imread(left_image_filepath,cv::IMREAD_UNCHANGED);
-        right = cv::imread(right_image_filepath,cv::IMREAD_UNCHANGED);
+        try {
+            left = cv::imread(left_image_filepath);
+            right = cv::imread(right_image_filepath);
+        } catch( cv::Exception& e ) {
+            const char* err_msg = e.what();
+            std::cerr << "exception caught: " << err_msg << std::endl;
+            return false;
+        }
+        if (left.empty() || right.empty()){
+            std::cerr << "left or right image is empty" << std::endl;
+            return false;
+        }
     } else {
         std::cerr << "Image file does not exist" << std::endl;
         return false;
@@ -712,8 +715,19 @@ bool I3DRSGM::forwardMatchFiles(
     std::cout << "Generating disparity from stereo pair..." << std::endl;
     cv::Mat disp = i3drsgm->forwardMatch(left,right);
 
-    cv::imwrite(output_folder+"/disparity.tif",disp);
-    std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
+    if (disp.empty()){
+        std::cerr << "disparity image empty" << std::endl;
+        return false;
+    }
+
+    try {
+        cv::imwrite(output_folder+"/disparity.tif",disp);
+        std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
+    } catch( cv::Exception& e ) {
+        const char* err_msg = e.what();
+        std::cerr << "exception caught: " << err_msg << std::endl;
+        return false;
+    }
 
     /*
     TODO
@@ -737,6 +751,21 @@ bool I3DRSGM::forwardMatchFiles(
     */
 
     return true;
+}
+
+bool I3DRSGM::forwardMatchFiles(
+    std::string left_image_filepath, std::string right_image_filepath, 
+    std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
+    std::string output_folder, bool preRectified)
+{
+    if (!I3DRSGM::isLicenseValid()){return false;}
+
+    std::string tmp_param_filepath = getexepath()+"/i3drsgm_tmp.param";
+    std::string param_filepath = getexepath()+"/i3drsgm.param";
+    // initalise matcher with param files
+    I3DRSGM * i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
+
+    return forwardMatchFiles(i3drsgm,left_image_filepath,right_image_filepath,left_yaml_cal_filepath,right_yaml_cal_filepath,output_folder,preRectified);
 }
 
 extern "C" {

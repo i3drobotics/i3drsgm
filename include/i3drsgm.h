@@ -83,6 +83,12 @@ public:
         return (valid);
     }
 
+    static bool forwardMatchFiles(I3DRSGM * i3drsgm,
+        std::string left_image_filepath, std::string right_image_filepath, 
+        std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
+        std::string output_folder,bool preRectified=false
+    );
+
     static bool forwardMatchFiles(
         std::string left_image_filepath, std::string right_image_filepath, 
         std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
