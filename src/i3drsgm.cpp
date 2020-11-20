@@ -654,15 +654,18 @@ std::string I3DRSGM::getCWD(){
 
 std::string I3DRSGM::getAppPath()
 {
+    std::string path;
     #ifdef _WIN32
-        char path[MAX_PATH] = { 0 };
-        GetModuleFileNameA(NULL, path, MAX_PATH);
-        return std::string(path);
+        char path_exe[MAX_PATH] = { 0 };
+        GetModuleFileNameA(NULL, path_exe, MAX_PATH);
+        path = std::string(path_exe);
     #else
         char result[PATH_MAX];
         ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
-        return std::string(result, (count > 0) ? count : 0);
+        path = std::string(result, (count > 0) ? count : 0);
     #endif
+    std::string folder = path.substr(0, path.find_last_of("\\/"));
+    return folder;
 }
 
 bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,

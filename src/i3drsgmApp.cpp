@@ -48,6 +48,7 @@ int main(int argc, char *argv[]){
     }
     std::string tmp_param_filepath = I3DRSGM::getAppPath()+"/i3drsgm_tmp.param";
     std::string param_filepath = I3DRSGM::getAppPath()+"/i3drsgm.param";
+    std::cout << "App path:" << I3DRSGM::getAppPath() << std::endl;
 
     I3DRSGM * i3drsgm;
 
