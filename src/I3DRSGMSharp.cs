@@ -3,7 +3,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace I3DRSGMSharp {
+namespace I3DRSGMSharp
+{
     public class i3drsgmSharp
     {
         private string left_cal_filepath;
@@ -11,19 +12,23 @@ namespace I3DRSGMSharp {
         private string output_folder;
         private Process appProcess;
 
-        public i3drsgmSharp(string left_cal_filepath, string right_cal_filepath, string output_folder){
+        public i3drsgmSharp(string left_cal_filepath, string right_cal_filepath, string output_folder, string app_path = null)
+        {
             this.left_cal_filepath = left_cal_filepath;
             this.right_cal_filepath = right_cal_filepath;
             this.output_folder = output_folder;
 
-            string cwd = Directory.GetCurrentDirectory();
-            string i3drsgmAppPath = cwd+"/I3DRSGMApp.exe";
-            Console.WriteLine(i3drsgmAppPath);
-            this.appProcess = new Process 
+            if (app_path == null)
+            {
+                string cwd = Directory.GetCurrentDirectory();
+                app_path = cwd + "/I3DRSGMApp.exe";
+            }
+            Console.WriteLine(app_path);
+            this.appProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = i3drsgmAppPath,
+                    FileName = app_path,
                     Arguments = "api",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -34,7 +39,7 @@ namespace I3DRSGMSharp {
             Console.WriteLine("Starting app...");
             this.appProcess.Start();
             string response;
-            this.apiRequest("INIT",out response);
+            this.apiRequest("INIT", out response);
         }
 
         private static string removePrefix(string text, string prefix)
@@ -48,51 +53,81 @@ namespace I3DRSGMSharp {
             while (true)
             {
                 string line = this.appProcess.StandardOutput.ReadLine();
-                if (line != null){
+                if (line != null)
+                {
                     string line_norm = Regex.Replace(line, @"\s", "");
                     Console.WriteLine(line_norm);
-                    if (line_norm  == "API_READY"){
+                    if (line_norm == "API_READY")
+                    {
                         response = line;
                         return true;
-                    } else if (line_norm.StartsWith("API_RESPONSE:")){
-                        string api_response = removePrefix(line_norm,"API_RESPONSE:");
-                        if (api_response.StartsWith("ERROR,")){
-                            string error_msg = removePrefix(api_response,"API_RESPONSE:");
+                    }
+                    else if (line_norm.StartsWith("API_RESPONSE:"))
+                    {
+                        string api_response = removePrefix(line_norm, "API_RESPONSE:");
+                        if (api_response.StartsWith("ERROR,"))
+                        {
+                            string error_msg = removePrefix(api_response, "API_RESPONSE:");
                             response = error_msg;
                             return false;
-                        } else {
+                        }
+                        else
+                        {
                             response = api_response;
                             return true;
                         }
-                    } else {
-                        Console.WriteLine("stout:"+line_norm);
+                    }
+                    else
+                    {
+                        Console.WriteLine("stout:" + line_norm);
                     }
                 }
             }
         }
 
-        public bool apiRequest(string request,out string response){
+        public bool apiRequest(string request, out string response)
+        {
             bool valid = this.apiWaitResponse(out response);
-            if (valid){
+            if (valid)
+            {
                 Console.WriteLine("sending api request...");
                 this.appProcess.StandardInput.WriteLine(request);
                 this.appProcess.StandardInput.Flush();
-                //self.appProcess.stdin.flush()
                 Console.WriteLine("waiting for api response...");
                 valid = this.apiWaitResponse(out response);
             }
             return valid;
         }
 
-        public bool forwardMatchFiles(string left_filepath, string right_filepath){
-            string appOptions="FORWARD_MATCH,"+left_filepath+","+right_filepath+","+this.left_cal_filepath+","+this.right_cal_filepath+","+this.output_folder+",0,1";
+        public bool forwardMatchFiles(string left_filepath, string right_filepath)
+        {
+            string appOptions = "FORWARD_MATCH," + left_filepath + "," + right_filepath + "," + this.left_cal_filepath + "," + this.right_cal_filepath + "," + this.output_folder + ",0,1";
             string response;
             bool valid = this.apiRequest(appOptions, out response);
             Console.WriteLine(response);
             return valid;
         }
 
-        public void close(){
+        public bool setMinDisparity(int val)
+        {
+            string appOptions = "SET_MIN_DISPARITY," + val.ToString();
+            string response;
+            bool valid = this.apiRequest(appOptions, out response);
+            Console.WriteLine(response);
+            return valid;
+        }
+
+        public bool setDisparityRange(int val)
+        {
+            string appOptions = "SET_DISPARITY_RANGE," + val.ToString();
+            string response;
+            bool valid = this.apiRequest(appOptions, out response);
+            Console.WriteLine(response);
+            return valid;
+        }
+
+        public void close()
+        {
             Console.WriteLine("Closing I3DRSGM process...");
             this.appProcess.Kill();
             Console.WriteLine("I3DRSGM process closed.");
