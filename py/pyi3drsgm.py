@@ -9,6 +9,8 @@ class I3DRSGMAppAPI:
     def __init__(self, output_folder=None, I3RSGMApp_folder=None):
         script_folder = os.path.dirname(os.path.realpath(__file__))
         self.init_success = False
+        self.PARAM_MIN_DISPARITY = "SET_MIN_DISPARITY"
+        self.PARAM_DISPARITY_RANGE = "SET_DISPARITY_RANGE"
 
         if (I3RSGMApp_folder == None):
             self.I3DRSGMApp = os.path.join(script_folder,'../I3DRSGMApp.exe')
@@ -35,7 +37,7 @@ class I3DRSGMAppAPI:
     def isInit(self):
         return self.init_success
 
-    def remove_prefix(self,text, prefix):
+    def removePrefix(self,text, prefix):
         if text.startswith(prefix):
             return text[len(prefix):]
         return text  # or whatever
@@ -48,9 +50,9 @@ class I3DRSGMAppAPI:
                 if (line_str  == "API_READY\r\n"):
                     return True,line_str
                 elif (line_str.startswith("API_RESPONSE:")):
-                    response = self.remove_prefix(line_str,"API_RESPONSE:")
+                    response = self.removePrefix(line_str,"API_RESPONSE:")
                     if (response.startswith("ERROR,")):
-                        error_msg = self.remove_prefix(response,"ERROR,")
+                        error_msg = self.removePrefix(response,"ERROR,")
                         return False,error_msg.rstrip()
                     else:
                         return True,response.rstrip()
@@ -74,9 +76,9 @@ class I3DRSGMAppAPI:
                 valid,response = self.apiWaitResponse()
             return valid,response
         else:
-           print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
-           print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
-           return False,"" 
+            print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
+            print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
+            return False,"" 
 
     def forwardMatchFiles(self, left_filepath, right_filepath, left_cal_filepath=None, right_cal_filepath=None):
         if (self.init_success):
@@ -91,11 +93,21 @@ class I3DRSGMAppAPI:
             print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
             print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
             return valid
+    def setParam(self,param,value):
+        if (self.init_success):
+            appOptions=param+","+value
+            valid,_ = self.apiRequest(appOptions)
+            return valid
+        else:
+            print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
+            print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
+            return False
 
     def close(self):
         self.appProcess.terminate()
 
 class pyI3DRSGM:
+
     def __init__(self, tmp_folder=None, I3RSGMApp_folder=None):
         self.i3drsgmAppAPI = I3DRSGMAppAPI(tmp_folder, I3RSGMApp_folder)
 
@@ -118,6 +130,24 @@ class pyI3DRSGM:
             print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
             print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
             return valid,None
+
+    def setDisparityRange(self,value):
+        if (self.isInit()):
+            valid = self.i3drsgmAppAPI.setParam(self.i3drsgmAppAPI.PARAM_DISPARITY_RANGE,value)
+            return valid
+        else:
+            print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
+            print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
+            return False
+
+    def setMinDisparity(self,value):
+        if (self.isInit()):
+            valid = self.i3drsgmAppAPI.setParam(self.i3drsgmAppAPI.PARAM_MIN_DISPARITY,value)
+            return valid
+        else:
+            print("Failed to initalise the pyI3DRSGM class. Make sure to initalise the class 'i3rsgm = pyI3DRSGM(...'")
+            print("Check valid initalisation with 'isInit' function. E.g. 'i3rsgm.isInit()'")
+            return False
 
     def close(self):
         self.i3drsgmAppAPI.close()
