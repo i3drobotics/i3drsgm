@@ -216,151 +216,101 @@ def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     # return the resized image
     return resized
 
+def display_disp(disp,Q):
+    wz = Q[2, 3]
+    q03 = Q[0, 3]
+    q13 = Q[1, 3]
+    q32 = Q[3, 2]
+    q33 = Q[3, 3]
+
+    print("Filtering disparity...")
+    disparity16 = -disp.astype(np.float32)
+
+    w = (disparity16 * q32) + q33
+
+    minW = np.min(w)
+    maxW = np.max(w)
+
+    w_zero_mask = w <= 0
+    disparity16[w_zero_mask != 0] = 0.0
+
+    d_inf_mask = disparity16 == 99999
+    disparity16[d_inf_mask != 0] = 0.0
+
+    masked_a = np.ma.masked_equal(disparity16, 0.0, copy=False)
+    minDisp = masked_a.min()
+    maxDisp = masked_a.max()
+
+    disparity16[w_zero_mask != 0] = minDisp
+    disparity16[d_inf_mask != 0] = maxDisp
+    disp_scaled = scale_disparity(disparity16)
+
+    print("Generating depth from disparity...")
+    depth = cv2.reprojectImageTo3D(disparity16, Q)
+    
+    w_zero_mask = w <= 0
+    depth[w_zero_mask != 0] = [ 0, 0, 0]
+
+    x,y,z = cv2.split(depth)
+    z[w_zero_mask != 0] = 0.0
+    z[d_inf_mask != 0] = 0.0
+    depth = cv2.merge((x,y,z))
+
+    masked_depth = np.ma.masked_equal(z, 0.0, copy=False)
+    minDepth = masked_depth.min()
+    maxDepth = masked_depth.max()
+    print("Depth range: "+str(minDepth)+","+str(maxDepth))
+
+    print("Applying colormap to disparity...")
+
+    # apply color map to disparity
+    disp_colormap = cv2.applyColorMap(disp_scaled, cv2.COLORMAP_JET)
+    disp_colormap[w_zero_mask != 0] = [0, 0, 0]
+    disp_colormap[d_inf_mask != 0] = [0, 0, 0]
+
+    disp_colormap_resized = image_resize(disp_colormap, height=640)
+    cv2.imshow("display", disp_colormap_resized)
+    cv2.waitKey(1)
+
+
 if __name__ == '__main__':
     script_folder = os.path.dirname(os.path.realpath(__file__))
     resource_folder = os.path.join(script_folder,"../resources")
 
-    # define calibration files for left and right image
+    # load stereo calibration from yamls
     left_cal_file = os.path.join(resource_folder,"sim_left.yaml")
     right_cal_file = os.path.join(resource_folder,"sim_right.yaml")
-    # get calibration from yaml files
     stcal = StereoCalibration()
     stcal.get_cal_from_yaml(left_cal_file,right_cal_file)
 
+    #initalise I3DRSGM
     print("Intitalising I3DRSGM...")
     i3drsgm = pyI3DRSGM(resource_folder)
     if (i3drsgm.isInit()):
-        valid = True
+        # load images from file
         left_img = cv2.imread(os.path.join(resource_folder,"sim_left.png"))
         right_img = cv2.imread(os.path.join(resource_folder,"sim_right.png"))
         left_gray_img = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
         right_gray_img = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
+
+        # Get Q from calibration
         Q = stcal.stereo_cal["q"]
+
+        # Set matcher parameters
         i3drsgm.setDisparityRange(0)
         i3drsgm.setDisparityRange(3264)
         i3drsgm.enableInterpolation(False)
 
-        wz = Q[2, 3]
-        q03 = Q[0, 3]
-        q13 = Q[1, 3]
-        q32 = Q[3, 2]
-        q33 = Q[3, 3]
-
+        valid = True
         while(valid):
-            # valid = i3drsgm.forwardMatchFiles(
-            #     os.path.join(resource_folder,"/left.png"),
-            #     os.path.join(resource_folder,"/right.png"))
+            # Rectify stereo image pair
             left_rect_img, right_rect_img = stcal.rectify_pair(left_gray_img,right_gray_img)
+            # Stereo match image pair
             print("Running I3DRSGM on images...")
             valid,disp = i3drsgm.forwardMatch(left_rect_img,right_rect_img)
             if (valid):
-                print("Filtering disparity...")
-                disparity16 = -disp.astype(np.float32)
+                # Display normalised disparity in OpenCV window
+                display_disp(disp,Q)
 
-                w = (disparity16 * q32) + q33
-
-                minW = np.min(w)
-                maxW = np.max(w)
-
-                w_zero_mask = w <= 0
-                disparity16[w_zero_mask != 0] = 0.0
-
-                d_inf_mask = disparity16 == 99999
-                disparity16[d_inf_mask != 0] = 0.0
-
-                masked_a = np.ma.masked_equal(disparity16, 0.0, copy=False)
-                minDisp = masked_a.min()
-                maxDisp = masked_a.max()
-
-                disparity16[w_zero_mask != 0] = minDisp
-                disparity16[d_inf_mask != 0] = maxDisp
-                disp_scaled = scale_disparity(disparity16)
-
-                print("Generating depth from disparity...")
-                depth = cv2.reprojectImageTo3D(disparity16, Q)
-                
-                w_zero_mask = w <= 0
-                depth[w_zero_mask != 0] = [ 0, 0, 0]
-
-                x,y,z = cv2.split(depth)
-                z[w_zero_mask != 0] = 0.0
-                z[d_inf_mask != 0] = 0.0
-                depth = cv2.merge((x,y,z))
-
-                masked_depth = np.ma.masked_equal(z, 0.0, copy=False)
-                minDepth = masked_depth.min()
-                maxDepth = masked_depth.max()
-                print("Depth range: "+str(minDepth)+","+str(maxDepth))
-
-                print("Applying colormap to disparity...")
-
-                # apply color map to disparity
-                disp_colormap = cv2.applyColorMap(disp_scaled, cv2.COLORMAP_JET)
-                disp_colormap[w_zero_mask != 0] = [0, 0, 0]
-                disp_colormap[d_inf_mask != 0] = [0, 0, 0]
-
-                disp_colormap_resized = image_resize(disp_colormap, height=640)
-                cv2.imshow("display", disp_colormap_resized)
-                cv2.waitKey(1)
+        # Important to close I3DRSGM to clean up memory
         i3drsgm.close()
-
-'''
-import numpy as np
-import ctypes as C
-import cvtypes
-from ctypes import cdll, c_void_p, c_long
-import cv2
-
-#TODO: Fix issue of missing dlls when importing I3DRSGM.dll
-print("Loading I3DRSGM library...")
-libI3DRSGM = C.cdll.LoadLibrary('C:/Code/I3DR/i3drsgm/install/i3drsgm/i3drsgm-1.0.6/bin/libI3DRSGM.dll')
-print("I3DRSGM library load complete")
-
-#def TestLicense():
-#    return libI3DRSGM.TestLicense()
-
-def showimg(img):
-    # Cast to c type pointer and 2 longs W/H.
-    rows = c_long(img.shape[0])
-    cols = c_long(img.shape[1])
-    cvtype = cvtypes.dtype_to_cvtype(img.dtype,img.shape[2])
-    data = img.ctypes.data_as(c_void_p)  # The C pointer
-    
-    libI3DRSGM.showimg(rows, cols, cvtype, data)
-    return
-
-def cvinout(img):
-    # Cast input image to c type pointer and 2 longs W/H.
-    rows_in = c_long(img.shape[0])
-    cols_in = c_long(img.shape[1])
-    cvtype_in = cvtypes.dtype_to_cvtype(img.dtype,img.shape[2])
-    data_in = img.ctypes.data_as(c_void_p)  # The C pointer
-    
-    # create numpy array for output to be filled into
-    # MUST be created before calling the function so the memory is assigned
-    img_out = np.zeros(dtype=np.uint8, shape=(img.shape[0], img.shape[1], img.shape[2]))
-    rows_out = c_long(img_out.shape[0])
-    cols_out = c_long(img_out.shape[1])
-    cvtype_out = cvtypes.dtype_to_cvtype(img_out.dtype,img_out.shape[2])
-    data_out = img_out.ctypes.data_as(c_void_p)  # The C pointer
-
-    libI3DRSGM.cvinout(
-        rows_in, cols_in, cvtype_in, data_in,
-        rows_out, cols_out, cvtype_out, data_out
-    )
-    return img_out
-
-if __name__ == '__main__':
-    if True:
-        print("I3DRSGM license valid")
-
-        c = cv2.VideoCapture(0)
-        while True:
-            _, f = c.read()
-            cv2.imshow('f', f)
-            cv2.imshow('cvinout', cvinout(f))
-            if cv2.waitKey(1) == 27:
-                break
-    else:
-        print("I3DRSGM license invalid")
-'''
