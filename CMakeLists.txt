@@ -158,6 +158,7 @@ if(BUILD_APP)
     # Define python files
     file(GLOB PYTHON_FILES
         "${PROJECT_SOURCE_DIR}/py/*.py"
+        "${PROJECT_SOURCE_DIR}/py/requirements.txt"
     )
 
     # Copy files to build directory

@@ -670,6 +670,57 @@ std::string I3DRSGM::getAppPath()
 
 bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
     std::string left_image_filepath, std::string right_image_filepath, 
+    std::string output_folder)
+{
+    cv::Mat left, right;
+    // check image files exist
+    if (cv::utils::fs::exists(left_image_filepath) && cv::utils::fs::exists(right_image_filepath)){
+        // read left and right image from file to OpenCV Mat
+        try {
+            left = cv::imread(left_image_filepath);
+            right = cv::imread(right_image_filepath);
+        } catch( cv::Exception& e ) {
+            const char* err_msg = e.what();
+            std::cerr << "exception caught: " << err_msg << std::endl;
+            return false;
+        }
+        if (left.empty() || right.empty()){
+            std::cerr << "left or right image is empty" << std::endl;
+            return false;
+        }
+    } else {
+        std::cerr << "Image file does not exist" << std::endl;
+        return false;
+    }
+
+    #if defined(_WIN32)
+        _mkdir(output_folder.c_str());
+    #else 
+        mkdir(output_folder.c_str(), 0777);
+    #endif
+
+    // Run stereo match on left and right images
+    std::cout << "Generating disparity from stereo pair..." << std::endl;
+    cv::Mat disp = i3drsgm->forwardMatch(left,right);
+
+    if (disp.empty()){
+        std::cerr << "disparity image empty" << std::endl;
+        return false;
+    }
+
+    try {
+        cv::imwrite(output_folder+"/disparity.tif",disp);
+        std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
+    } catch( cv::Exception& e ) {
+        const char* err_msg = e.what();
+        std::cerr << "exception caught: " << err_msg << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
+    std::string left_image_filepath, std::string right_image_filepath, 
     std::string left_yaml_cal_filepath, std::string right_yaml_cal_filepath,
     std::string output_folder, bool preRectified)
 {

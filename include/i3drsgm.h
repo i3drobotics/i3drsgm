@@ -74,17 +74,13 @@ public:
         JR::Phobos::SMatchingParametersInput tmp_params = JR::Phobos::SMatchingParametersInput();
         tmp_matcher_handle = JR::Phobos::CreateMatchStereoHandle(tmp_params);
         bool valid = tmp_matcher_handle != nullptr;
-        if (!valid){
-            std::string hostname, hostid;
-            getHostInfo(hostname,hostid);
-            std::cout << "Invalid license. Please place license file in the following directory: " << std::endl;
-            std::cout << "'"<< getAppPath() << "'" << std::endl;
-            std::cout << std::endl;
-            std::cout << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
-            std::cout << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
-        }
         return (valid);
     }
+
+    static bool forwardMatchFiles(I3DRSGM * i3drsgm,
+        std::string left_image_filepath, std::string right_image_filepath, 
+        std::string output_folder
+    );
 
     static bool forwardMatchFiles(I3DRSGM * i3drsgm,
         std::string left_image_filepath, std::string right_image_filepath, 

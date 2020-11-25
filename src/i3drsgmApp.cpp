@@ -7,8 +7,6 @@
 #include <sstream>
 
 int main(int argc, char *argv[]){
-    if (!I3DRSGM::isLicenseValid()){return 1;}
-
     // default values
     std::string left_filepath = "./resources/left.png";
     std::string right_filepath = "./resources/right.png";
@@ -53,6 +51,11 @@ int main(int argc, char *argv[]){
     I3DRSGM * i3drsgm;
 
     if (api){
+        if (!I3DRSGM::isLicenseValid()){
+            std::cout << "API_RESPONSE:ERROR,invalid license" << std::endl;
+            return 1;
+        }
+
         while(true){
             std::cout<< "API_READY" << std::endl;
             std::string api_input;
@@ -77,17 +80,28 @@ int main(int argc, char *argv[]){
                     i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
                     std::cout << "API_RESPONSE:init success" << std::endl;
                 } else if (input_list[0] == "FORWARD_MATCH"){
-                    if (input_list.size() == 8){
+                    if (input_list.size() == 7){
                         left_filepath = input_list[1];
                         right_filepath = input_list[2];
                         left_cal_filepath = input_list[3];
                         right_cal_filepath = input_list[4];
                         output_folder = input_list[5];
                         preRectified = input_list[6] == "1";
-                        loop = input_list[7] == "1";
                         std::cout << left_filepath << std::endl;
                         std::cout << right_filepath << std::endl;
                         bool valid = I3DRSGM::forwardMatchFiles(i3drsgm,left_filepath,right_filepath,left_cal_filepath,right_cal_filepath,output_folder,preRectified);
+                        if (valid){
+                            std::cout << "API_RESPONSE:match success" << std::endl;
+                        } else {
+                            std::cout << "API_RESPONSE:ERROR,match failed" << std::endl;
+                        }
+                    } else if (input_list.size() == 4){
+                        left_filepath = input_list[1];
+                        right_filepath = input_list[2];
+                        output_folder = input_list[3];
+                        std::cout << left_filepath << std::endl;
+                        std::cout << right_filepath << std::endl;
+                        bool valid = I3DRSGM::forwardMatchFiles(i3drsgm,left_filepath,right_filepath,output_folder);
                         if (valid){
                             std::cout << "API_RESPONSE:match success" << std::endl;
                         } else {
@@ -100,6 +114,16 @@ int main(int argc, char *argv[]){
             }
         }
     } else {
+        if (!I3DRSGM::isLicenseValid()){
+            std::string hostname, hostid;
+            I3DRSGM::getHostInfo(hostname,hostid);
+            std::cerr << "Invalid license. Please place license file in the following directory: " << std::endl;
+            std::cerr << "'"<< I3DRSGM::getAppPath() << "'" << std::endl;
+            std::cerr << std::endl;
+            std::cerr << "If you do not have a license, contact info@i3drobotics.com to purchase a license and provide the following details: " << std::endl;
+            std::cerr << "Hostname: " << hostname << " HostID: " << hostid << std::endl;
+            return 1;
+        }
         i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
         bool valid = I3DRSGM::forwardMatchFiles(i3drsgm,left_filepath,right_filepath,left_cal_filepath,right_cal_filepath,output_folder,preRectified);
         if (valid){
