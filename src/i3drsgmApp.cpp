@@ -6,6 +6,39 @@
 #include <string>
 #include <sstream>
 
+void updatePyramidLevel(I3DRSGM * i3drsgm, int level) {
+    i3drsgm->maxPyramid(level);
+}
+
+void enableInterpolatation(I3DRSGM * i3drsgm, bool enable) {
+    i3drsgm->enableInterpolation(enable);
+}
+
+void updateMinDisparity(I3DRSGM * i3drsgm, int min_disparity) {
+    double shift_p = (double)min_disparity / 20;
+    i3drsgm->setDisparityShift(shift_p);
+}
+
+void updateDisparityRange(I3DRSGM * i3drsgm, int range) {
+    int m_range = range / 10;
+    //force odd number
+    if (m_range % 2 == 0)
+    {
+        m_range++;
+    }
+    i3drsgm->setDisparityRange(m_range);
+}
+
+void updateBlockSize(I3DRSGM * i3drsgm, int size) {
+    int census_size = (size - 1) / 2;
+    if (census_size % 2 == 0)
+    {
+        census_size++;
+    }
+
+    i3drsgm->setWindowSize(census_size);
+}
+
 int main(int argc, char *argv[]){
     // default values
     std::string left_filepath = "./resources/left.png";
@@ -78,34 +111,18 @@ int main(int argc, char *argv[]){
             if (input_list.size() > 0){
                 if (input_list[0] == "INIT"){
                     i3drsgm = new I3DRSGM(tmp_param_filepath,param_filepath);
-                    int range = 1696/10;
-                    if (range % 2 == 0)
-                    {
-                        range++;
-                    }
-                    i3drsgm->setDisparityRange((16 * range) / 10);
-                    float shift = 348/20;
-                    i3drsgm->setDisparityShift(shift);
-                    int census_size = 11/2;
-                    if (census_size % 2 == 0)
-                    {
-                        census_size++;
-                    }
-                    i3drsgm->setWindowSize(census_size);
-                    i3drsgm->maxPyramid(6);
                     i3drsgm->enableOcclusionDetection(false);
                     i3drsgm->enableOccInterpol(false);
-                    i3drsgm->enableInterpolation(true);
+                    updateDisparityRange(i3drsgm,3200);
+                    updateMinDisparity(i3drsgm,0);
+                    updateBlockSize(i3drsgm,11);
+                    updatePyramidLevel(i3drsgm,6);
+                    enableInterpolatation(i3drsgm,false);
                     std::cout << "API_RESPONSE:init success" << std::endl;
                 } else if (input_list[0] == "SET_DISPARITY_RANGE"){
                     if (input_list.size() == 2){
                         int val = std::stoi(input_list[1]);
-                        val /= 10;
-                        if (val % 2 == 0)
-                        {
-                            val++;
-                        }
-                        i3drsgm->setDisparityRange((16 * val) / 10);
+                        updateDisparityRange(i3drsgm,val);
                         bool valid = true;
                         if (valid){
                             std::cout << "API_RESPONSE:parameter set" << std::endl;
@@ -118,8 +135,21 @@ int main(int argc, char *argv[]){
                 } else if (input_list[0] == "SET_MIN_DISPARITY"){
                     if (input_list.size() == 2){
                         int val = std::stoi(input_list[1]);
-                        val /= 20;
-                        i3drsgm->setDisparityShift(val);
+                        updateMinDisparity(i3drsgm,val);
+                        bool valid = true;
+                        if (valid){
+                            std::cout << "API_RESPONSE:parameter set" << std::endl;
+                        } else {
+                            std::cout << "API_RESPONSE:ERROR,failed to set parameter" << std::endl;
+                        }
+                    } else {
+                        std::cout << "API_RESPONSE:ERROR,incorrect number of parameters" << std::endl;
+                    }
+                 } else if (input_list[0] == "SET_INTERPOLATION"){
+                    if (input_list.size() == 2){
+                        int val = std::stoi(input_list[1]);
+                        bool enable = val == 1;
+                        enableInterpolatation(i3drsgm,enable);
                         bool valid = true;
                         if (valid){
                             std::cout << "API_RESPONSE:parameter set" << std::endl;
