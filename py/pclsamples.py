@@ -74,7 +74,7 @@ if __name__ == '__main__':
             if (valid):
                 # Downsample disparity image for faster processing
                 # Downsample rate is passed through to 'display_disp' and 'depth_from_disp' to compensative for the change in image size
-                downsample_rate = 0.5
+                downsample_rate = 0.15
                 disp_resize = cv2.resize(disp,None,fx=downsample_rate,fy=downsample_rate,interpolation=cv2.INTER_NEAREST)
                 # Get normalised colormap for visualising disparity
                 disp_colormap = colormap_from_disparity(disp_resize,Q,downsample_rate)
