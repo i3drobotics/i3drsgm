@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     # Initalise I3DRSGM
     print("Intitalising I3DRSGM...")
-    i3drsgm = pyI3DRSGM(license_file="2020_02_21_I3DRWL001_WINDOWS.lic")
+    i3drsgm = pyI3DRSGM()
     if (i3drsgm.isInit()):
         # Load images from file
         left_img = cv2.imread(os.path.join(resource_folder,"sim_left.png"))
