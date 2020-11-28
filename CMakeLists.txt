@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.9)
 
 option(BUILD_CSHARP "Build C#" ON)
+if(BUILD_APP)
+    message("Build C#: ON")
+else()
+    message("Build C#: OFF")
+endif()
 
 # Define project
 if(BUILD_CSHARP)
@@ -22,6 +27,13 @@ else()
     message("BUILD APP: OFF")
 endif()
 
+option(WITH_3RDPARTY_DLLS "Add 3rdparty dlls to build. Useful for testing." OFF)
+if(WITH_3RDPARTY_DLLS)
+    message("WITH_3RDPARTY_DLLS: ON")
+else()
+    message("WITH_3RDPARTY_DLLS: OFF")
+endif()
+
 # Use 'Release' by default for build
 set(DEFAULT_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -33,9 +45,6 @@ endif()
 
 # Define GNU standard installation directories
 include(GNUInstallDirs)
-
-# Add export definitions
-#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Define library source files
 set(LIB_SRC_FILES src/i3drsgm.cpp)
@@ -135,17 +144,12 @@ add_custom_command(TARGET lib${PROJECT_NAME} POST_BUILD
 
 install(FILES ${PARAM_FILES} DESTINATION bin)
 
-if(BUILD_APP)
+if (WITH_3RDPARTY_DLLS)
     # Define OpenCV dlls (will be copied to install folder)
     set(OpenCV_DLLS
         ${OpenCV_DIR}/x64/vc15/bin/opencv_world450.dll
         ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_ffmpeg450_64.dll
         ${OpenCV_DIR}/x64/vc15/bin/opencv_videoio_msmf450_64.dll
-    )
-    # Define resource files (will be copied to install folder)
-    file(GLOB RESOURCE_FILES
-        "${PROJECT_SOURCE_DIR}/resources/*.png"
-        "${PROJECT_SOURCE_DIR}/resources/*.yaml"
     )
 
     # QT dlls required if not using your own QT dlls
@@ -155,10 +159,18 @@ if(BUILD_APP)
         "${PhobosIntegration_DIR}/qt/*.dll"
     )
 
-    # Define python files
-    file(GLOB PYTHON_FILES
-        "${PROJECT_SOURCE_DIR}/py/*.py"
-        "${PROJECT_SOURCE_DIR}/py/requirements.txt"
+    # Install OpenCV dlls in install directory
+    install(FILES ${OpenCV_DLLS} DESTINATION bin)
+    # Install PhobosIntegration dlls in install directory
+    install(FILES ${PhobosIntegration_DLLS} DESTINATION bin)
+
+endif(WITH_3RDPARTY_DLLS)
+
+if(BUILD_APP)
+    # Define resource files (will be copied to install folder)
+    file(GLOB RESOURCE_FILES
+        "${PROJECT_SOURCE_DIR}/resources/*.png"
+        "${PROJECT_SOURCE_DIR}/resources/*.yaml"
     )
 
     # Copy files to build directory
@@ -172,14 +184,9 @@ if(BUILD_APP)
     #     COMMENT "Copying extra files to build..."
     # )
 
-    # Install OpenCV dlls in install directory
-    install(FILES ${OpenCV_DLLS} DESTINATION bin)
-    # Install PhobosIntegration dlls in install directory
-    install(FILES ${PhobosIntegration_DLLS} DESTINATION bin)
+    
     # Install resource files in install directory
     install(DIRECTORY DESTINATION bin/resources)
     install(FILES ${RESOURCE_FILES} DESTINATION bin/resources)
-    # Install resource files in py directory
-    install(FILES ${PYTHON_FILES} DESTINATION bin/py)
 
 endif()
