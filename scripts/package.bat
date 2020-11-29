@@ -5,6 +5,9 @@ SET initcwd=%cd%
 SET scriptpath=%~dp0
 cd %scriptpath:~0,-1%
 
+:: read i3drsgm version from file
+set /p version=< version.txt 
+
 :: set 7z directory
 set z7path="C:\Program Files\7-Zip\7z"
 :: read i3drsgm version from file
@@ -39,6 +42,16 @@ cd ..
 rmdir install\i3drsgm\phobosIntegration-1.0.54 /s /q
 rmdir install\i3drsgm\cmake /s /q
 rmdir install\i3drsgm\opencv-4.5.0 /s /q
+
+mkdir install\i3drsgm_app
+copy install\i3drsgm\i3drsgm-%version%\bin\* install\i3drsgm_app\
+copy 3rdparty\phobosIntegration-1.0.54\bin\* install\i3drsgm_app\
+copy 3rdparty\phobosIntegration-1.0.54\qt\* install\i3drsgm_app\
+copy 3rdparty\opencv-4.5.0\opencv\build\x64\vc15\bin\opencv_world450.dll install\i3drsgm_app\
+copy 3rdparty\opencv-4.5.0\opencv\build\x64\vc15\bin\opencv_videoio_ffmpeg450_64.dll install\i3drsgm_app\
+copy 3rdparty\opencv-4.5.0\opencv\build\x64\vc15\bin\opencv_videoio_msmf450_64.dll install\i3drsgm_app\
+cd install
+%z7path% a ../release/i3drsgm-%version%-app.zip i3drsgm_app
 
 :: reset working directory
 cd %initcwd%
