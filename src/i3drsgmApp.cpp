@@ -158,7 +158,20 @@ int main(int argc, char *argv[]){
                     } else {
                         std::cout << "API_RESPONSE:ERROR,incorrect number of parameters" << std::endl;
                     }
-                 } else if (input_list[0] == "SET_INTERPOLATION"){
+                } else if (input_list[0] == "SET_PYRAMID_LEVEL"){
+                    if (input_list.size() == 2){
+                        int val = std::stoi(input_list[1]);
+                        updatePyramidLevel(i3drsgm,val);
+                        bool valid = true;
+                        if (valid){
+                            std::cout << "API_RESPONSE:parameter set" << std::endl;
+                        } else {
+                            std::cout << "API_RESPONSE:ERROR,failed to set parameter" << std::endl;
+                        }
+                    } else {
+                        std::cout << "API_RESPONSE:ERROR,incorrect number of parameters" << std::endl;
+                    }
+                } else if (input_list[0] == "SET_INTERPOLATION"){
                     if (input_list.size() == 2){
                         int val = std::stoi(input_list[1]);
                         bool enable = val == 1;
