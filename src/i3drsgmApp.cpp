@@ -119,6 +119,19 @@ int main(int argc, char *argv[]){
                     updatePyramidLevel(i3drsgm,6);
                     enableInterpolatation(i3drsgm,false);
                     std::cout << "API_RESPONSE:init success" << std::endl;
+                } else if (input_list[0] == "SET_WINDOW_SIZE"){
+                    if (input_list.size() == 2){
+                        int val = std::stoi(input_list[1]);
+                        updateBlockSize(i3drsgm,val);
+                        bool valid = true;
+                        if (valid){
+                            std::cout << "API_RESPONSE:parameter set" << std::endl;
+                        } else {
+                            std::cout << "API_RESPONSE:ERROR,failed to set parameter" << std::endl;
+                        }
+                    } else {
+                        std::cout << "API_RESPONSE:ERROR,incorrect number of parameters" << std::endl;
+                    }
                 } else if (input_list[0] == "SET_DISPARITY_RANGE"){
                     if (input_list.size() == 2){
                         int val = std::stoi(input_list[1]);
