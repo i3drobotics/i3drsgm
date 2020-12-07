@@ -369,8 +369,8 @@ void I3DRSGM::setWindowSize(int census_size)
   //params.oPyramidParams[0].oMetricParams.nWindowSizeY = census_size;
   */
 
-    std::string x_param_name = "Feature Set Size X";
-    std::string y_param_name = "Feature Set Size Y";
+    std::string x_param_name = "Disparity Median Optimizer Kernel Size X";
+    std::string y_param_name = "Disparity Median Optimizer Kernel Size Y";
     std::string param_val = std::to_string(census_size);
     for (int i = 0; i <= params.nNumberOfPyramids; i++)
     {
