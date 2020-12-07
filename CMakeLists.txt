@@ -9,12 +9,12 @@ endif()
 
 # Define project
 if(BUILD_CSHARP)
-    project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX CSharp)
+    project(I3DRSGM VERSION 1.0.7 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX CSharp)
     if(NOT MSVC)
         message(FATAL_ERROR "This CMake files only works with MSVC due to building C#.")
     endif(NOT MSVC)
 else(BUILD_CSHARP)
-    project(I3DRSGM VERSION 1.0.6 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+    project(I3DRSGM VERSION 1.0.7 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
 endif(BUILD_CSHARP)
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
