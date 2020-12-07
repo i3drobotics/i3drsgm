@@ -377,6 +377,8 @@ void I3DRSGM::setWindowSize(int census_size)
         EditPyramidParamRaw(&this->params_raw, i, x_param_name, param_val);
         EditPyramidParamRaw(&this->params_raw, i, y_param_name, param_val);
     }
+    EditPyramidParamRaw(&this->params_raw, 0, x_param_name, param_val, true);
+    EditPyramidParamRaw(&this->params_raw, 0, y_param_name, param_val, true);
     this->matcher_status = createMatcher();
 }
 
