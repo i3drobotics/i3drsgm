@@ -4,7 +4,7 @@ I3DR's Semi-Global Matcher for generation of disparity from stereo images.
 See [here](https://github.com/i3drobotics/i3drsgmApp) for a demo app that uses this library. 
 
 ## Latest Release
-Download the latest release v1.0.0 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.0/i3drsgm-1.0.0.exe)
+Download the latest release v1.0.9 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.9/i3drsgm-1.0.9.exe)
 
 # Requirements
  - cmake 
