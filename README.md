@@ -8,7 +8,7 @@ Download the latest release v1.0.9 [here](https://github.com/i3drobotics/i3drsgm
 
 # Requirements
  - cmake 
- - OpenCV v3.4.1 (See setup instructions for details.)
+ - OpenCV v4.5.0 (See setup instructions for details.)
  - PhobosIntegration v1.0.54 (See setup instructions for details.)
  - Z-zip (Used to package library into exe, see package instructions for details.)
  - Fetch (Portable app included in this repo. Used to fetch private github release files, see setup instructions for details.)
@@ -27,8 +27,8 @@ This script uses a portable version of 'fetch' to download from private github r
 
 ### Manual setup
 #### OpenCV
-Download OpenCV 3.4.1 from [here](https://sourceforge.net/projects/opencvlibrary/files/3.4.10/opencv-3.4.10-vc14_vc15.exe/download)
-Install self extracting archive into 3rdparty/opencv-3.4.1/
+Download OpenCV 4.5.0 from [here](https://sourceforge.net/projects/opencvlibrary/files/4.5.0/opencv-4.5.0-vc14_vc15.exe/download)
+Install self extracting archive into 3rdparty/opencv-4.5.0/
 
 #### PhobosIntegration
 Downoad Phobos Integration 1.0.54 from [here](https://github.com/i3drobotics/phobosIntegration/releases/download/v1.0.54/phobosIntegration-1.0.54-win64_archive.exe).
