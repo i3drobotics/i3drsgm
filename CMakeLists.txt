@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
 
+# Read version from file
+file(READ "version.txt" ver)
+message("version: ${ver}")
+
 option(BUILD_CSHARP "Build C#" ON)
 if(BUILD_APP)
     message("Build C#: ON")
@@ -9,12 +13,12 @@ endif()
 
 # Define project
 if(BUILD_CSHARP)
-    project(I3DRSGM VERSION 1.0.9 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX CSharp)
+    project(I3DRSGM VERSION ${ver} DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX CSharp)
     if(NOT MSVC)
         message(FATAL_ERROR "This CMake files only works with MSVC due to building C#.")
     endif(NOT MSVC)
 else(BUILD_CSHARP)
-    project(I3DRSGM VERSION 1.0.9 DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
+    project(I3DRSGM VERSION ${ver} DESCRIPTION "I3DR's Semi-Global Matching library" LANGUAGES CXX)
 endif(BUILD_CSHARP)
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
@@ -68,14 +72,14 @@ find_package(PhobosIntegration REQUIRED)
 include_directories(${PhobosIntegration_INCLUDE_DIRS})
 
 # Build library
-add_library(lib${PROJECT_NAME} SHARED ${LIB_SRC_FILES})
-target_link_libraries(lib${PROJECT_NAME} ${PhobosIntegration_LIBRARIES})
-target_compile_definitions(lib${PROJECT_NAME} PRIVATE I3DRSGM_EXPORT)
+add_library(${PROJECT_NAME} SHARED ${LIB_SRC_FILES})
+target_link_libraries(${PROJECT_NAME} ${PhobosIntegration_LIBRARIES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE I3DRSGM_EXPORT)
 
 if(BUILD_APP)
     # Build simple app
     add_executable(${PROJECT_NAME}App ${APP_SRC_FILES})
-    target_link_libraries(${PROJECT_NAME}App PRIVATE lib${PROJECT_NAME})
+    target_link_libraries(${PROJECT_NAME}App PRIVATE ${PROJECT_NAME})
 endif(BUILD_APP)
 
 if(BUILD_CSHARP)
@@ -93,18 +97,18 @@ if(BUILD_CSHARP)
 endif(BUILD_CSHARP)
 
 # Include headers in library
-target_include_directories(lib${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
 # Include version in library
-set_target_properties(lib${PROJECT_NAME} PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION})
 
 # Export cmake config
-install(TARGETS lib${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -122,7 +126,7 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAM
 install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
 
 # Install cmake targets in install folder
-export(TARGETS lib${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
+export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
 
 if(BUILD_APP)
     # Install app in bin folder
@@ -137,8 +141,8 @@ file(GLOB PARAM_FILES
     "${PROJECT_SOURCE_DIR}/params/*.param"
 )
 
-add_custom_command(TARGET lib${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:lib${PROJECT_NAME}>
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PARAM_FILES} $<TARGET_FILE_DIR:${PROJECT_NAME}>
     COMMENT "Copying files to build..."
 )
 

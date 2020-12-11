@@ -7,33 +7,20 @@ SET scriptpath=%~dp0
 cd %scriptpath:~0,-1%
 
 :: set i3drsgm version
-set version=version
+set version=VERSION
 
-:: search for token in first argument
-set token_found=false
-if "%~1"=="" (
-    :: token not stated in argument, look for it in token.txt file
-    echo Reading PAT from 'token.txt'
-    if exist "token.txt" (
-        :: read github PAT from text file
-        set /p token=< token.txt
-        set token_found=true
-    ) else (
-        :: failed to file token.txt file
-        echo Token file not found
-    )
-) else (
-    :: token found in first argument, read token from argument
-    set token=%~1
-    set token_found=true
-)
-
-:: download phobos integration exe from github release using token
-fetch --repo="https://github.com/i3drobotics/i3drsgm" --tag="v%version%" --release-asset="i3drsgm-%version%.exe" --progress --github-oauth-token=%token% ./
+:: url for downloading opencv
+SET url="https://github.com/i3drobotics/i3drsgm/releases/download/v%version%/i3drsgm-%version%.exe"
+:: output folder where donwload is placed
+SET "outputfolder=%cd%"
+:: full output filepath
+SET "output=%outputfolder%\i3drsgm-%version%.exe"
+:: download opencv from url
+curl -o "%output%" -L %url%
 :: extract self-exracting archive
-i3drsgm-%version%.exe -o"./" -y
+%output% -o%outputfolder% -y
 :: delete downloaded file
-del i3drsgm-%version%.exe
+del %output%
 
 :: install opencv
 call i3drsgm\opencv-4.5.0\install_opencv.bat

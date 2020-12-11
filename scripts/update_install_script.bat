@@ -6,7 +6,7 @@ SET scriptpath=%~dp0
 cd %scriptpath:~0,-1%
 
 :: read i3drsgm version from file
-set /p version=< version.txt 
+set /p version=< ..\version.txt 
 
 set InputFile=install_i3drsgm.template
 set OutputFile=install_i3drsgm.bat
