@@ -1,0 +1,19 @@
+name: Build
+
+on: [push]
+
+jobs:
+    build:
+        runs-on: windows-latest
+        steps:
+          - uses: actions/checkout@v2
+          - name: Install 3rdparty
+            shell: cmd
+            run: |
+              call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+              .\scripts\install_3rdparty.bat
+          - name: Build
+            shell: cmd
+            run: |
+              call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+              .\scripts\build.bat
