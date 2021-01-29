@@ -17,7 +17,7 @@
 I3DRSGM::I3DRSGM(std::string tmp_param_file, std::string param_file)
 {
     tmp_param_file_ = tmp_param_file;
-    std::cout << param_file << std::endl;
+    //std::cout << param_file << std::endl;
     this->params_raw = ReadFileRaw(param_file);
 
     this->matcher_status = createMatcher();
@@ -141,7 +141,7 @@ int I3DRSGM::getErrorDisparity(void)
 cv::Mat I3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 {
     cv::Mat oDisparity = cv::Mat();
-    std::cout << "[I3DRSGM] Starting match..." << std::endl;
+    //std::cout << "[I3DRSGM] Starting match..." << std::endl;
     const std::lock_guard<std::mutex> lock(mtx);
     if (matcher_handle != nullptr)
     {
@@ -167,7 +167,7 @@ cv::Mat I3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
         std::cerr << "Matcher handle not found" << std::endl;
         //this->matcher_status = createMatcher();
     }
-    std::cout << "[I3DRSGM] Match complete." << std::endl;
+    //std::cout << "[I3DRSGM] Match complete." << std::endl;
     return oDisparity;
 }
 
@@ -175,7 +175,7 @@ cv::Mat I3DRSGM::forwardMatch(cv::Mat left, cv::Mat right)
 cv::Mat I3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
 {
     cv::Mat oDisparity;
-    std::cout << "[I3DRSGM] Starting match..." << std::endl;
+    //std::cout << "[I3DRSGM] Starting match..." << std::endl;
     if (matcher_handle != nullptr)
     {
         std::string sgm_log = "./sgm_log.txt";
@@ -200,7 +200,7 @@ cv::Mat I3DRSGM::backwardMatch(cv::Mat left, cv::Mat right)
         std::cerr << "Matcher handle not found" << std::endl;
         //this->matcher_status = createMatcher();
     }
-    std::cout << "[I3DRSGM] Match complete." << std::endl;
+    //std::cout << "[I3DRSGM] Match complete." << std::endl;
     return oDisparity;
 }
 
@@ -623,21 +623,21 @@ void I3DRSGM::enableOccInterpol(bool enable)
 
 int I3DRSGM::createMatcher()
 {
-    std::cout << "[I3DRSGM] Creating matcher..." << std::endl;
+    //std::cout << "[I3DRSGM] Creating matcher..." << std::endl;
     try
     {
         const std::lock_guard<std::mutex> lock(mtx);
         if (matcher_handle != nullptr)
         {
-            std::cout << "[I3DRSGM] Destroying Stereo Handle..." << std::endl;
+            //std::cout << "[I3DRSGM] Destroying Stereo Handle..." << std::endl;
             JR::Phobos::DestroyMatchStereoHandle(matcher_handle);
         }
-        std::cout << "Re-creating matcher with new paramters..." << std::endl;
+        //std::cout << "Re-creating matcher with new paramters..." << std::endl;
         WriteIniFileRaw(this->tmp_param_file_, this->params_raw);
         this->params = JR::Phobos::SMatchingParametersInput();
         JR::Phobos::ReadIniFile(this->params, this->tmp_param_file_);
         matcher_handle = JR::Phobos::CreateMatchStereoHandle(params);
-        std::cout << "Re-created matcher with new paramters." << std::endl;
+        //std::cout << "Re-created matcher with new paramters." << std::endl;
         return 0;
     }
     catch (...)
@@ -702,7 +702,7 @@ bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
     #endif
 
     // Run stereo match on left and right images
-    std::cout << "Generating disparity from stereo pair..." << std::endl;
+    //std::cout << "Generating disparity from stereo pair..." << std::endl;
     cv::Mat disp = i3drsgm->forwardMatch(left,right);
 
     if (disp.empty()){
@@ -712,7 +712,7 @@ bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
 
     try {
         cv::imwrite(output_folder+"/disparity.tif",disp);
-        std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
+        //std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
     } catch( cv::Exception& e ) {
         const char* err_msg = e.what();
         std::cerr << "exception caught: " << err_msg << std::endl;
@@ -755,7 +755,7 @@ bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
     cv::Mat l_rectmapy, r_rectmapy;
     cv::Mat Q;
     cv::Size cal_image_size;
-    std::cout << "Loading calibration files..." << std::endl;
+    //std::cout << "Loading calibration files..." << std::endl;
     bool cal_valid = StereoSupport::loadCalibrationFromYamls(
         left_yaml_cal_filepath,right_yaml_cal_filepath,
         l_camera_matrix,l_dist_coef,l_rect_matrix,l_proj_matrix,l_rectmapx,l_rectmapy,
@@ -774,13 +774,13 @@ bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
 
     if (!preRectified){
         // rectify input images
-        std::cout << "Rectifying images..." << std::endl;
+        //std::cout << "Rectifying images..." << std::endl;
         cv::remap(left, left, l_rectmapx, l_rectmapy, cv::INTER_CUBIC);
         cv::remap(right, right, r_rectmapx, r_rectmapy, cv::INTER_CUBIC);
     }
 
     // Run stereo match on left and right images
-    std::cout << "Generating disparity from stereo pair..." << std::endl;
+    //std::cout << "Generating disparity from stereo pair..." << std::endl;
     cv::Mat disp = i3drsgm->forwardMatch(left,right);
 
     if (disp.empty()){
@@ -790,7 +790,7 @@ bool I3DRSGM::forwardMatchFiles(I3DRSGM* i3drsgm,
 
     try {
         cv::imwrite(output_folder+"/disparity.tif",disp);
-        std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
+        //std::cout << "Disparity saved to: " << output_folder+"/disparity.tif" << std::endl;
     } catch( cv::Exception& e ) {
         const char* err_msg = e.what();
         std::cerr << "exception caught: " << err_msg << std::endl;
