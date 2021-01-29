@@ -20,7 +20,7 @@ public:
         double cxr = r_proj_mat.at<double>(0,2);
         double cy = l_proj_mat.at<double>(1,2);
         double fx = l_camera_matrix.at<double>(0,0);
-        double fy = l_camera_matrix.at<double>(1,1);
+        //double fy = l_camera_matrix.at<double>(1,1);
 
         double p14 = r_proj_mat.at<double>(0,3);
         double baseline = -p14 / fx;
@@ -76,20 +76,20 @@ public:
 
         fs_l.release();
 
-        std::cout << "Pre-computing rectification maps..." << std::endl;
+        //std::cout << "Pre-computing rectification maps..." << std::endl;
         generateRectificationMap(camera_matrix, dist_coeffs, rect_mat, proj_mat, cal_image_size, rectmapx, rectmapy);
 
-        std::cout << "Camera matrix:" << std::endl;
-        std::cout << camera_matrix << std::endl;
+        //std::cout << "Camera matrix:" << std::endl;
+        //std::cout << camera_matrix << std::endl;
 
-        std::cout << "Distortion Coefficients:" << std::endl;
-        std::cout << dist_coeffs << std::endl;
+        //std::cout << "Distortion Coefficients:" << std::endl;
+        //std::cout << dist_coeffs << std::endl;
 
-        std::cout << "Rectification matrix:" << std::endl;
-        std::cout << rect_mat << std::endl;
+        //std::cout << "Rectification matrix:" << std::endl;
+        //std::cout << rect_mat << std::endl;
 
-        std::cout << "Projection matrix:" << std::endl;
-        std::cout << proj_mat << std::endl;
+        //std::cout << "Projection matrix:" << std::endl;
+        //std::cout << proj_mat << std::endl;
 
         return true;
     }
@@ -115,11 +115,11 @@ public:
 
         fs_l.release();
 
-        std::cout << "Camera matrix:" << std::endl;
-        std::cout << camera_matrix << std::endl;
+        //std::cout << "Camera matrix:" << std::endl;
+        //std::cout << camera_matrix << std::endl;
 
-        std::cout << "Distortion Coefficients:" << std::endl;
-        std::cout << dist_coeffs << std::endl;
+        //std::cout << "Distortion Coefficients:" << std::endl;
+        //std::cout << dist_coeffs << std::endl;
 
         return true;
     }
@@ -131,18 +131,18 @@ public:
             cv::Mat& Q) {
         
         bool valid = true;
-        std::cout << "Loading left calibration..." << std::endl;
+        //std::cout << "Loading left calibration..." << std::endl;
         valid &= loadCalibrationFromXml(left_cal,l_camera_matrix,l_dist_coeffs);
-        std::cout << "Loading right calibration..." << std::endl;
+        //std::cout << "Loading right calibration..." << std::endl;
         valid &= loadCalibrationFromXml(right_cal,r_camera_matrix,r_dist_coeffs);
 
-        std::cout << "Left camera matrix:" << std::endl;
-        std::cout << l_camera_matrix << std::endl;
+        //std::cout << "Left camera matrix:" << std::endl;
+        //std::cout << l_camera_matrix << std::endl;
 
-        std::cout << "Left distortion Coefficients:" << std::endl;
-        std::cout << l_dist_coeffs << std::endl;
+        //std::cout << "Left distortion Coefficients:" << std::endl;
+        //std::cout << l_dist_coeffs << std::endl;
 
-        std::cout << "Loading stereo calibration..." << std::endl;
+        //std::cout << "Loading stereo calibration..." << std::endl;
         if (!cv::utils::fs::exists(stereo_cal)){
             std::cerr << "calibration file:' " << stereo_cal << " ' does not exist" << std::endl;
             return false;
@@ -164,23 +164,23 @@ public:
 
         fs_s.release();
 
-        std::cout << "Q:" << std::endl;
-        std::cout << Q << std::endl;
+        //std::cout << "Q:" << std::endl;
+        //std::cout << Q << std::endl;
 
-        std::cout << "R:" << std::endl;
-        std::cout << R << std::endl;
+        //std::cout << "R:" << std::endl;
+        //std::cout << R << std::endl;
 
-        std::cout << "T:" << std::endl;
-        std::cout << T << std::endl;
+        //std::cout << "T:" << std::endl;
+        //std::cout << T << std::endl;
 
         cv::Mat Q_cal;
 
-        std::cout << "Pre-computing stereo values..." << std::endl;
+        //std::cout << "Pre-computing stereo values..." << std::endl;
         cv::stereoRectify(
             l_camera_matrix, l_dist_coeffs, r_camera_matrix, r_dist_coeffs, image_size, 
             R, T, l_rect_mat, r_rect_mat, l_proj_mat, r_proj_mat, Q_cal, 0);
 
-        std::cout << "Pre-computing rectification maps..." << std::endl;
+        //std::cout << "Pre-computing rectification maps..." << std::endl;
         generateRectificationMap(l_camera_matrix, l_dist_coeffs, l_rect_mat, l_proj_mat, image_size, l_rectmapx, l_rectmapy);
         generateRectificationMap(r_camera_matrix, r_dist_coeffs, r_rect_mat, r_proj_mat, image_size, r_rectmapx, r_rectmapy);
 
@@ -193,11 +193,11 @@ public:
             cv::Mat& r_camera_matrix, cv::Mat& r_dist_coeffs, cv::Mat& r_rect_mat, cv::Mat& r_proj_mat, cv::Mat& r_rectmapx, cv::Mat& r_rectmapy,
             cv::Size& cal_image_size, cv::Mat& Q){
         bool valid = true;
-        std::cout << "Loading left calibration..." << std::endl;
+        //std::cout << "Loading left calibration..." << std::endl;
         valid &= loadCalibrationFromYaml(left_cal_filepath,l_camera_matrix,l_dist_coeffs,l_rect_mat,l_proj_mat,cal_image_size,l_rectmapx, l_rectmapy);
-        std::cout << "Loading right calibration..." << std::endl;
+        //std::cout << "Loading right calibration..." << std::endl;
         valid &= loadCalibrationFromYaml(right_cal_filepath,r_camera_matrix,r_dist_coeffs,r_rect_mat,r_proj_mat,cal_image_size,r_rectmapx, r_rectmapy);
-        std::cout << "Computing Q matrix..." << std::endl;
+        //std::cout << "Computing Q matrix..." << std::endl;
         valid &= calcQ(l_proj_mat,r_proj_mat,l_camera_matrix,Q);
 
         return valid;
