@@ -7,7 +7,7 @@ See [here](https://github.com/i3drobotics/i3drsgmApp) for a demo app that uses t
 ![Build](https://github.com/i3drobotics/i3drsgm/workflows/Build/badge.svg?event=push)
 
 ## Latest Release
-Download the latest release v1.0.9 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.9/i3drsgm-1.0.9.exe)
+Download the latest release v1.0.12 [here](https://github.com/i3drobotics/i3drsgm/releases/download/v1.0.12/i3drsgm-1.0.12.exe)
 
 # Requirements
  - cmake 

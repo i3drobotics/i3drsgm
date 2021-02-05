@@ -7,15 +7,11 @@ namespace I3DRSGMSharp
 {
     public class i3drsgmSharp
     {
-        private string left_cal_filepath;
-        private string right_cal_filepath;
         private string output_folder;
         private Process appProcess;
 
-        public i3drsgmSharp(string left_cal_filepath, string right_cal_filepath, string output_folder, string app_path = null)
+        public i3drsgmSharp(string output_folder, string app_path = null)
         {
-            this.left_cal_filepath = left_cal_filepath;
-            this.right_cal_filepath = right_cal_filepath;
             this.output_folder = output_folder;
 
             if (app_path == null)
@@ -101,7 +97,7 @@ namespace I3DRSGMSharp
 
         public bool forwardMatchFiles(string left_filepath, string right_filepath)
         {
-            string appOptions = "FORWARD_MATCH," + left_filepath + "," + right_filepath + "," + this.left_cal_filepath + "," + this.right_cal_filepath + "," + this.output_folder + ",0,1";
+            string appOptions = "FORWARD_MATCH," + left_filepath + "," + right_filepath + "," + this.output_folder;
             string response;
             bool valid = this.apiRequest(appOptions, out response);
             Console.WriteLine(response);

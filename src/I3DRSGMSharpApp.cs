@@ -9,7 +9,7 @@ namespace I3DRSGMSharpApp {
         {
             string cwd = Directory.GetCurrentDirectory();
             string resource_folder = cwd+"/resources";
-            i3drsgmSharp i3drsgm = new i3drsgmSharp(resource_folder+"/left.yaml",resource_folder+"/right.yaml",resource_folder+"/output");
+            i3drsgmSharp i3drsgm = new i3drsgmSharp(resource_folder+"/output");
             bool valid = true;
             while(valid){
                 valid = i3drsgm.forwardMatchFiles(resource_folder+"/left.png",resource_folder+"/right.png");
