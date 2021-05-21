@@ -836,6 +836,475 @@ bool I3DRSGM::forwardMatchFiles(
     return forwardMatchFiles(i3drsgm,left_image_filepath,right_image_filepath,left_yaml_cal_filepath,right_yaml_cal_filepath,output_folder,preRectified);
 }
 
+void I3DRSGM::printParams() {
+    bool bHasNodata = params.bHasNodata;
+    std::cout << "params.bHasNodata = " << bHasNodata << ";" << std::endl;
+    float fNodataValue = params.fNodataValue;
+    std::cout << "params.fNodataValue = " << fNodataValue << ";" << std::endl;
+
+
+    //Output
+    bool bWriteBackDisp = params.bWriteBackDisp;
+    std::cout << "params.bWriteBackDisp = " << bWriteBackDisp << ";" << std::endl;
+
+    //parameter
+    bool bWriteBackMatchDistance = params.bWriteBackMatchDistance;
+    std::cout << "params.bWriteBackMatchDistance = " << bWriteBackMatchDistance << ";" << std::endl;
+    bool bWriteRevBackMatchDistance = params.bWriteRevBackMatchDistance;
+    std::cout << "params.bWriteRevBackMatchDistance = " << bWriteRevBackMatchDistance << ";" << std::endl;
+    std::string strBackMatchDistanceOutputFile = params.strBackMatchDistanceOutputFile;
+    std::cout << "params.strBackMatchDistanceOutputFile = \"" << strBackMatchDistanceOutputFile << "\";" << std::endl;
+    std::string strRevBackMatchDistanceOutputFile = params.strRevBackMatchDistanceOutputFile;
+    std::cout << "params.strRevBackMatchDistanceOutputFile = \"" << strRevBackMatchDistanceOutputFile << "\";" << std::endl;
+
+    int nNumberOfPyramids = params.nNumberOfPyramids;
+    std::cout << "params.nNumberOfPyramids = " << nNumberOfPyramids << ";" << std::endl;
+    int nPredictor = params.nPredictor;
+    std::cout << "params.nPredictor = " << nPredictor << ";" << std::endl;
+    std::string strDispPredictionFile = params.strDispPredictionFile;
+    std::cout << "params.strDispPredictionFile = \"" << strDispPredictionFile << "\";" << std::endl;
+    std::string strBackDispPredictionFile = params.strBackDispPredictionFile;
+    std::cout << "params.strBackDispPredictionFile = \"" << strBackDispPredictionFile << "\";" << std::endl;
+    float fTopPredictionShift = params.fTopPredictionShift;
+    std::cout << "params.fTopPredictionShift = " << fTopPredictionShift << ";" << std::endl;
+    int nJointMode = params.nJointMode;
+    std::cout << "params.nJointMode = " << nJointMode << ";" << std::endl;
+    int nJointModeKernelSize = params.nJointModeKernelSize;
+    std::cout << "params.nJointModeKernelSize = " << nJointModeKernelSize << ";" << std::endl;
+    int nNumberOfMorphologicalIter = params.nNumberOfMorphologicalIter;
+    std::cout << "params.nNumberOfMorphologicalIter = " << nNumberOfMorphologicalIter << ";" << std::endl;
+
+    std::vector<int> oGPUs = params.oGPUs;
+    int i = 0;
+    for (int oGPU : oGPUs) {
+        std::cout << "params.oGPUs[" << i << "] = " << oGPU << ";" << std::endl;
+        i++;
+    }
+    
+    std::vector<JR::Phobos::SMatchingParameters> oPyramidParams = params.oPyramidParams;
+    i = 0;
+    for (JR::Phobos::SMatchingParameters oPyramidParam : oPyramidParams) {
+        bool bCompute = oPyramidParam.bCompute;
+        std::cout << "params.oPyramidParams[" << i << "].bCompute = " << bCompute << ";" << std::endl;
+        int nMetric = oPyramidParam.nMetric;
+        std::cout << "params.oPyramidParams[" << i << "].nMetric = " << nMetric << ";" << std::endl;
+
+        JR::Phobos::SMetricParameters oMetricParams = oPyramidParam.oMetricParams;
+        int nWindowSizeX = oMetricParams.nWindowSizeX;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nWindowSizeX = " << nWindowSizeX << ";" << std::endl;
+        int nWindowSizeY = oMetricParams.nWindowSizeY;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nWindowSizeY = " << nWindowSizeY << ";" << std::endl;
+        float fMetricDeltaX = oMetricParams.fMetricDeltaX;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fMetricDeltaX = " << fMetricDeltaX << ";" << std::endl;
+        float fMetricDeltaY = oMetricParams.fMetricDeltaY;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fMetricDeltaY = " << fMetricDeltaY << ";" << std::endl;
+        int nCensusCenterFunction = oMetricParams.nCensusCenterFunction;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nCensusCenterFunction = " << nCensusCenterFunction << ";" << std::endl;
+        bool bUseCensusTexture = oMetricParams.bUseCensusTexture;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.bUseCensusTexture = " << bUseCensusTexture << ";" << std::endl;
+        int nRotatedWindow = oMetricParams.nRotatedWindow;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nRotatedWindow = " << nRotatedWindow << ";" << std::endl;
+
+        int nNumberOfScales = oMetricParams.nNumberOfScales;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nNumberOfScales = " << nNumberOfScales << ";" << std::endl;
+        float fScaleStepSize = oMetricParams.fScaleStepSize;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fScaleStepSize = " << fScaleStepSize << ";" << std::endl;
+        int nNumberOfSlants = oMetricParams.nNumberOfSlants;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.nNumberOfSlants = " << nNumberOfSlants << ";" << std::endl;
+        float fSlantStepSize = oMetricParams.fSlantStepSize;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fSlantStepSize = " << fSlantStepSize << ";" << std::endl;
+
+        bool bUseProximityWeight = oMetricParams.bUseProximityWeight;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.bUseProximityWeight = " << bUseProximityWeight << ";" << std::endl;
+        float fProximityGamma = oMetricParams.fProximityGamma;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fProximityGamma = " << fProximityGamma << ";" << std::endl;
+
+        bool bUseSimilarityWeight = oMetricParams.bUseSimilarityWeight;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.bUseSimilarityWeight = " << bUseSimilarityWeight << ";" << std::endl;
+        float fSimilarityGamma = oMetricParams.fSimilarityGamma;
+        std::cout << "params.oPyramidParams[" << i << "].oMetricParams.fSimilarityGamma = " << fSimilarityGamma << ";" << std::endl;
+
+
+
+        int nMaximumNumberOfDisparities = oPyramidParam.nMaximumNumberOfDisparities;
+        std::cout << "params.oPyramidParams[" << i << "].nMaximumNumberOfDisparities = " << nMaximumNumberOfDisparities << ";" << std::endl;
+
+        float fDisparityStepSize = oPyramidParam.fDisparityStepSize;
+        std::cout << "params.oPyramidParams[" << i << "].fDisparityStepSize = " << fDisparityStepSize << ";" << std::endl;
+        int nSubpixelFnc = oPyramidParam.nSubpixelFnc;
+        std::cout << "params.oPyramidParams[" << i << "].nSubpixelFnc = " << nSubpixelFnc << ";" << std::endl;
+        float fMaxCost = oPyramidParam.fMaxCost;
+        std::cout << "params.oPyramidParams[" << i << "].fMaxCost = " << fMaxCost << ";" << std::endl;
+        bool bDoSubpixelNormalization = oPyramidParam.bDoSubpixelNormalization;
+        std::cout << "params.oPyramidParams[" << i << "].bDoSubpixelNormalization = " << bDoSubpixelNormalization << ";" << std::endl;
+        
+        JR::Phobos::SSGMParameters oSGMParams = oPyramidParam.oSGMParams;
+        float fCostNodataValue = oSGMParams.fCostNodataValue;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fCostNodataValue = " << fCostNodataValue << ";" << std::endl;
+        int nAllowedOutsideImageMatchCount = oSGMParams.nAllowedOutsideImageMatchCount;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAllowedOutsideImageMatchCount = " << nAllowedOutsideImageMatchCount << ";" << std::endl;
+        bool bDSICountCorrection = oSGMParams.bDSICountCorrection;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bDSICountCorrection = " << bDSICountCorrection << ";" << std::endl;
+        int nDSICountCorrectionNoDataCheckMode = oSGMParams.nDSICountCorrectionNoDataCheckMode;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nDSICountCorrectionNoDataCheckMode = " << nDSICountCorrectionNoDataCheckMode << ";" << std::endl;
+
+        bool bMatch_S_N = oSGMParams.bMatch_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bMatch_S_N = " << bMatch_S_N << ";" << std::endl;
+        float fP1_S_N = oSGMParams.fP1_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP1_S_N = " << fP1_S_N << ";" << std::endl;
+        float fP2_S_N = oSGMParams.fP2_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP2_S_N = " << fP2_S_N << ";" << std::endl;
+        bool bP2EqualP1_S_N = oSGMParams.bP2EqualP1_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bP2EqualP1_S_N = " << bP2EqualP1_S_N << ";" << std::endl;
+        int nAdaptiveP1Fnc_S_N = oSGMParams.nAdaptiveP1Fnc_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP1Fnc_S_N = " << nAdaptiveP1Fnc_S_N << ";" << std::endl;
+        int nAdaptiveP2Fnc_S_N = oSGMParams.nAdaptiveP2Fnc_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP2Fnc_S_N = " << nAdaptiveP2Fnc_S_N << ";" << std::endl;
+        bool bAdditive_S_N = oSGMParams.bAdditive_S_N;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bAdditive_S_N = " << bAdditive_S_N << ";" << std::endl;
+
+        bool bMatch_E_W = oSGMParams.bMatch_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bMatch_E_W = " << bMatch_E_W << ";" << std::endl;
+        float fP1_E_W = oSGMParams.fP1_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP1_E_W = " << fP1_E_W << ";" << std::endl;
+        float fP2_E_W = oSGMParams.fP2_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP2_E_W = " << fP2_E_W << ";" << std::endl;
+        bool bP2EqualP1_E_W = oSGMParams.bP2EqualP1_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bP2EqualP1_E_W = " << bP2EqualP1_E_W << ";" << std::endl;
+        int nAdaptiveP1Fnc_E_W = oSGMParams.nAdaptiveP1Fnc_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP1Fnc_E_W = " << nAdaptiveP1Fnc_E_W << ";" << std::endl;
+        int nAdaptiveP2Fnc_E_W = oSGMParams.nAdaptiveP2Fnc_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP2Fnc_E_W = " << nAdaptiveP2Fnc_E_W << ";" << std::endl;
+        bool bAdditive_E_W = oSGMParams.bAdditive_E_W;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bAdditive_E_W = " << bAdditive_E_W << ";" << std::endl;
+
+        bool bMatch_SW_NE = oSGMParams.bMatch_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bMatch_SW_NE = " << bMatch_SW_NE << ";" << std::endl;
+        float fP1_SW_NE = oSGMParams.fP1_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP1_SW_NE = " << fP1_SW_NE << ";" << std::endl;
+        float fP2_SW_NE = oSGMParams.fP2_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP2_SW_NE = " << fP2_SW_NE << ";" << std::endl;
+        bool bP2EqualP1_SW_NE = oSGMParams.bP2EqualP1_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bP2EqualP1_SW_NE = " << bP2EqualP1_SW_NE << ";" << std::endl;
+        int nAdaptiveP1Fnc_SW_NE = oSGMParams.nAdaptiveP1Fnc_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP1Fnc_SW_NE = " << nAdaptiveP1Fnc_SW_NE << ";" << std::endl;
+        int nAdaptiveP2Fnc_SW_NE = oSGMParams.nAdaptiveP2Fnc_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP2Fnc_SW_NE = " << nAdaptiveP2Fnc_SW_NE << ";" << std::endl;
+        bool bAdditive_SW_NE = oSGMParams.bAdditive_SW_NE;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bAdditive_SW_NE = " << bAdditive_SW_NE << ";" << std::endl;
+
+        bool bMatch_SE_NW = oSGMParams.bMatch_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bMatch_SE_NW = " << bMatch_SE_NW << ";" << std::endl;
+        float fP1_SE_NW = oSGMParams.fP1_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP1_SE_NW = " << fP1_SE_NW << ";" << std::endl;
+        float fP2_SE_NW = oSGMParams.fP2_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.fP2_SE_NW = " << fP2_SE_NW << ";" << std::endl;
+        bool bP2EqualP1_SE_NW = oSGMParams.bP2EqualP1_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bP2EqualP1_SE_NW = " << bP2EqualP1_SE_NW << ";" << std::endl;
+        int nAdaptiveP1Fnc_SE_NW = oSGMParams.nAdaptiveP1Fnc_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP1Fnc_SE_NW = " << nAdaptiveP1Fnc_SE_NW << ";" << std::endl;
+        int nAdaptiveP2Fnc_SE_NW = oSGMParams.nAdaptiveP2Fnc_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.nAdaptiveP2Fnc_SE_NW = " << nAdaptiveP2Fnc_SE_NW << ";" << std::endl;
+        bool bAdditive_SE_NW = oSGMParams.bAdditive_SE_NW;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bAdditive_SE_NW = " << bAdditive_SE_NW << ";" << std::endl;
+
+
+        bool bUseDSITexture = oSGMParams.bUseDSITexture;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bUseDSITexture = " << bUseDSITexture << ";" << std::endl;
+        bool bUseAggregatedCostTexture = oSGMParams.bUseAggregatedCostTexture;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bUseAggregatedCostTexture = " << bUseAggregatedCostTexture << ";" << std::endl;
+        bool bUseCPUSgm = oSGMParams.bUseCPUSgm;
+        std::cout << "params.oPyramidParams[" << i << "].oSGMParams.bUseCPUSgm = " << bUseCPUSgm << ";" << std::endl;
+
+        bool bMultiGPU_AfterDSI = oPyramidParam.bMultiGPU_AfterDSI;
+        std::cout << "params.oPyramidParams[" << i << "].bMultiGPU_AfterDSI = " << bMultiGPU_AfterDSI << ";" << std::endl;
+
+        bool bMedian = oPyramidParam.bMedian;
+        std::cout << "params.oPyramidParams[" << i << "].bMedian = " << bMedian << ";" << std::endl;
+        int iMedX = oPyramidParam.iMedX;
+        std::cout << "params.oPyramidParams[" << i << "].iMedX = " << iMedX << ";" << std::endl;
+        int iMedY = oPyramidParam.iMedY;
+        std::cout << "params.oPyramidParams[" << i << "].iMedY = " << iMedY << ";" << std::endl;
+
+        bool bSpeckle = oPyramidParam.bSpeckle;
+        std::cout << "params.oPyramidParams[" << i << "].bSpeckle = " << bSpeckle << ";" << std::endl;
+
+        int iNodataPol = oPyramidParam.iNodataPol;
+        std::cout << "params.oPyramidParams[" << i << "].iNodataPol = " << iNodataPol << ";" << std::endl;
+        int iBorderPol = oPyramidParam.iBorderPol;
+        std::cout << "params.oPyramidParams[" << i << "].iBorderPol = " << iBorderPol << ";" << std::endl;
+        float fMedianThresh = oPyramidParam.fMedianThresh;
+        std::cout << "params.oPyramidParams[" << i << "].fMedianThresh = " << fMedianThresh << ";" << std::endl;
+        bool bSplittedMedian = oPyramidParam.bSplittedMedian;
+        std::cout << "params.oPyramidParams[" << i << "].bSplittedMedian = " << bSplittedMedian << ";" << std::endl;
+
+        int iSpeckleMaxSize = oPyramidParam.iSpeckleMaxSize;
+        std::cout << "params.oPyramidParams[" << i << "].iSpeckleMaxSize = " << iSpeckleMaxSize << ";" << std::endl;
+        float fSpeckleMaxDiff = oPyramidParam.fSpeckleMaxDiff;
+        std::cout << "params.oPyramidParams[" << i << "].fSpeckleMaxDiff = " << fSpeckleMaxDiff << ";" << std::endl;
+        //back matching parameters:
+        bool bBackMatch = oPyramidParam.bBackMatch;
+        std::cout << "params.oPyramidParams[" << i << "].bBackMatch = " << bBackMatch << ";" << std::endl;
+        bool bComputeBackDisparity = oPyramidParam.bComputeBackDisparity;
+        std::cout << "params.oPyramidParams[" << i << "].bComputeBackDisparity = " << bComputeBackDisparity << ";" << std::endl;
+
+        float fMaxBackMatchingDist = oPyramidParam.fMaxBackMatchingDist;
+        std::cout << "params.oPyramidParams[" << i << "].fMaxBackMatchingDist = " << fMaxBackMatchingDist << ";" << std::endl;
+        bool bKeepValueOnNodataInBackmatch = oPyramidParam.bKeepValueOnNodataInBackmatch;
+        std::cout << "params.oPyramidParams[" << i << "].bKeepValueOnNodataInBackmatch = " << bKeepValueOnNodataInBackmatch << ";" << std::endl;
+        bool bKeepValueOnOutsideImage = oPyramidParam.bKeepValueOnOutsideImage;
+        std::cout << "params.oPyramidParams[" << i << "].bKeepValueOnOutsideImage = " << bKeepValueOnOutsideImage << ";" << std::endl;
+
+        bool bOcclusionDetection = oPyramidParam.bOcclusionDetection;
+        std::cout << "params.oPyramidParams[" << i << "].bOcclusionDetection = " << bOcclusionDetection << ";" << std::endl;
+        float fOcclusionDispGapSize = oPyramidParam.fOcclusionDispGapSize;
+        std::cout << "params.oPyramidParams[" << i << "].fOcclusionDispGapSize = " << fOcclusionDispGapSize << ";" << std::endl;
+        int nRegionGrowingMode = oPyramidParam.nRegionGrowingMode;
+        std::cout << "params.oPyramidParams[" << i << "].nRegionGrowingMode = " << nRegionGrowingMode << ";" << std::endl;
+        int nRegionGrowingIterations = oPyramidParam.nRegionGrowingIterations;
+        std::cout << "params.oPyramidParams[" << i << "].nRegionGrowingIterations = " << nRegionGrowingIterations << ";" << std::endl;
+
+        bool bInterpol = oPyramidParam.bInterpol;
+        std::cout << "params.oPyramidParams[" << i << "].bInterpol = " << bInterpol << ";" << std::endl;
+        int nDir = oPyramidParam.nDir;
+        std::cout << "params.oPyramidParams[" << i << "].nDir = " << nDir << ";" << std::endl;
+        int nNth = oPyramidParam.nNth;
+        std::cout << "params.oPyramidParams[" << i << "].nNth = " << nNth << ";" << std::endl;
+        int nMinNth = oPyramidParam.nMinNth;
+        std::cout << "params.oPyramidParams[" << i << "].nMinNth = " << nMinNth << ";" << std::endl;
+        float fRadius = oPyramidParam.fRadius;
+        std::cout << "params.oPyramidParams[" << i << "].fRadius = " << fRadius << ";" << std::endl;
+        int nMode = oPyramidParam.nMode;
+        std::cout << "params.oPyramidParams[" << i << "].nMode = " << nMode << ";" << std::endl;
+
+        bool bOccInterpol = oPyramidParam.bOccInterpol;       
+        std::cout << "params.oPyramidParams[" << i << "].bOccInterpol = " << bOccInterpol << ";" << std::endl;
+        int nOccDir = oPyramidParam.nOccDir;
+        std::cout << "params.oPyramidParams[" << i << "].nOccDir = " << nOccDir << ";" << std::endl;
+        int nOccNth = oPyramidParam.nOccNth;
+        std::cout << "params.oPyramidParams[" << i << "].nOccNth = " << nOccNth << ";" << std::endl;
+        int nOccMinNth = oPyramidParam.nOccMinNth;
+        std::cout << "params.oPyramidParams[" << i << "].nOccMinNth = " << nOccMinNth << ";" << std::endl;
+        float fOccRadius = oPyramidParam.fOccRadius;
+        std::cout << "params.oPyramidParams[" << i << "].fOccRadius = " << fOccRadius << ";" << std::endl;
+        int nOccMode = oPyramidParam.nOccMode;
+        std::cout << "params.oPyramidParams[" << i << "].nOccMode = " << nOccMode << ";" << std::endl;
+        i++;
+    }
+    JR::Phobos::SMatchingParameters oFinalSubPixelParameters = params.oFinalSubPixelParameters;
+    bool bCompute = oFinalSubPixelParameters.bCompute;
+    std::cout << "params.oFinalSubPixelParameters.bCompute = " << bCompute << ";" << std::endl;
+    int nMetric = oFinalSubPixelParameters.nMetric;
+    std::cout << "params.oFinalSubPixelParameters.nMetric = " << nMetric << ";" << std::endl;
+
+    JR::Phobos::SMetricParameters oMetricParams = oFinalSubPixelParameters.oMetricParams;
+    int nWindowSizeX = oMetricParams.nWindowSizeX;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nWindowSizeX = " << nWindowSizeX << ";" << std::endl;
+    int nWindowSizeY = oMetricParams.nWindowSizeY;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nWindowSizeY = " << nWindowSizeY << ";" << std::endl;
+    float fMetricDeltaX = oMetricParams.fMetricDeltaX;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fMetricDeltaX = " << fMetricDeltaX << ";" << std::endl;
+    float fMetricDeltaY = oMetricParams.fMetricDeltaY;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fMetricDeltaY = " << fMetricDeltaY << ";" << std::endl;
+    int nCensusCenterFunction = oMetricParams.nCensusCenterFunction;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nCensusCenterFunction = " << nCensusCenterFunction << ";" << std::endl;
+    bool bUseCensusTexture = oMetricParams.bUseCensusTexture;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.bUseCensusTexture = " << bUseCensusTexture << ";" << std::endl;
+    int nRotatedWindow = oMetricParams.nRotatedWindow;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nRotatedWindow = " << nRotatedWindow << ";" << std::endl;
+
+    int nNumberOfScales = oMetricParams.nNumberOfScales;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nNumberOfScales = " << nNumberOfScales << ";" << std::endl;
+    float fScaleStepSize = oMetricParams.fScaleStepSize;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fScaleStepSize = " << fScaleStepSize << ";" << std::endl;
+    int nNumberOfSlants = oMetricParams.nNumberOfSlants;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.nNumberOfSlants = " << nNumberOfSlants << ";" << std::endl;
+    float fSlantStepSize = oMetricParams.fSlantStepSize;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fSlantStepSize = " << fSlantStepSize << ";" << std::endl;
+
+    bool bUseProximityWeight = oMetricParams.bUseProximityWeight;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.bUseProximityWeight = " << bUseProximityWeight << ";" << std::endl;
+    float fProximityGamma = oMetricParams.fProximityGamma;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fProximityGamma = " << fProximityGamma << ";" << std::endl;
+
+    bool bUseSimilarityWeight = oMetricParams.bUseSimilarityWeight;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.bUseSimilarityWeight = " << bUseSimilarityWeight << ";" << std::endl;
+    float fSimilarityGamma = oMetricParams.fSimilarityGamma;
+    std::cout << "params.oFinalSubPixelParameters.oMetricParams.fSimilarityGamma = " << fSimilarityGamma << ";" << std::endl;
+
+
+
+    int nMaximumNumberOfDisparities = oFinalSubPixelParameters.nMaximumNumberOfDisparities;
+    std::cout << "params.oFinalSubPixelParameters.nMaximumNumberOfDisparities = " << nMaximumNumberOfDisparities << ";" << std::endl;
+
+    float fDisparityStepSize = oFinalSubPixelParameters.fDisparityStepSize;
+    std::cout << "params.oFinalSubPixelParameters.fDisparityStepSize = " << fDisparityStepSize << ";" << std::endl;
+    int nSubpixelFnc = oFinalSubPixelParameters.nSubpixelFnc;
+    std::cout << "params.oFinalSubPixelParameters.nSubpixelFnc = " << nSubpixelFnc << ";" << std::endl;
+    float fMaxCost = oFinalSubPixelParameters.fMaxCost;
+    std::cout << "params.oFinalSubPixelParameters.fMaxCost = " << fMaxCost << ";" << std::endl;
+    bool bDoSubpixelNormalization = oFinalSubPixelParameters.bDoSubpixelNormalization;
+    std::cout << "params.oFinalSubPixelParameters.bDoSubpixelNormalization = " << bDoSubpixelNormalization << ";" << std::endl;
+
+    JR::Phobos::SSGMParameters oSGMParams = oFinalSubPixelParameters.oSGMParams;
+    float fCostNodataValue = oSGMParams.fCostNodataValue;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fCostNodataValue = " << fCostNodataValue << ";" << std::endl;
+    int nAllowedOutsideImageMatchCount = oSGMParams.nAllowedOutsideImageMatchCount;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAllowedOutsideImageMatchCount = " << nAllowedOutsideImageMatchCount << ";" << std::endl;
+    bool bDSICountCorrection = oSGMParams.bDSICountCorrection;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bDSICountCorrection = " << bDSICountCorrection << ";" << std::endl;
+    int nDSICountCorrectionNoDataCheckMode = oSGMParams.nDSICountCorrectionNoDataCheckMode;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nDSICountCorrectionNoDataCheckMode = " << nDSICountCorrectionNoDataCheckMode << ";" << std::endl;
+
+    bool bMatch_S_N = oSGMParams.bMatch_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bMatch_S_N = " << bMatch_S_N << ";" << std::endl;
+    float fP1_S_N = oSGMParams.fP1_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP1_S_N = " << fP1_S_N << ";" << std::endl;
+    float fP2_S_N = oSGMParams.fP2_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP2_S_N = " << fP2_S_N << ";" << std::endl;
+    bool bP2EqualP1_S_N = oSGMParams.bP2EqualP1_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bP2EqualP1_S_N = " << bP2EqualP1_S_N << ";" << std::endl;
+    int nAdaptiveP1Fnc_S_N = oSGMParams.nAdaptiveP1Fnc_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP1Fnc_S_N = " << nAdaptiveP1Fnc_S_N << ";" << std::endl;
+    int nAdaptiveP2Fnc_S_N = oSGMParams.nAdaptiveP2Fnc_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP2Fnc_S_N = " << nAdaptiveP2Fnc_S_N << ";" << std::endl;
+    bool bAdditive_S_N = oSGMParams.bAdditive_S_N;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bAdditive_S_N = " << bAdditive_S_N << ";" << std::endl;
+
+    bool bMatch_E_W = oSGMParams.bMatch_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bMatch_E_W = " << bMatch_E_W << ";" << std::endl;
+    float fP1_E_W = oSGMParams.fP1_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP1_E_W = " << fP1_E_W << ";" << std::endl;
+    float fP2_E_W = oSGMParams.fP2_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP2_E_W = " << fP2_E_W << ";" << std::endl;
+    bool bP2EqualP1_E_W = oSGMParams.bP2EqualP1_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bP2EqualP1_E_W = " << bP2EqualP1_E_W << ";" << std::endl;
+    int nAdaptiveP1Fnc_E_W = oSGMParams.nAdaptiveP1Fnc_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP1Fnc_E_W = " << nAdaptiveP1Fnc_E_W << ";" << std::endl;
+    int nAdaptiveP2Fnc_E_W = oSGMParams.nAdaptiveP2Fnc_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP2Fnc_E_W = " << nAdaptiveP2Fnc_E_W << ";" << std::endl;
+    bool bAdditive_E_W = oSGMParams.bAdditive_E_W;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bAdditive_E_W = " << bAdditive_E_W << ";" << std::endl;
+
+    bool bMatch_SW_NE = oSGMParams.bMatch_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bMatch_SW_NE = " << bMatch_SW_NE << ";" << std::endl;
+    float fP1_SW_NE = oSGMParams.fP1_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP1_SW_NE = " << fP1_SW_NE << ";" << std::endl;
+    float fP2_SW_NE = oSGMParams.fP2_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP2_SW_NE = " << fP2_SW_NE << ";" << std::endl;
+    bool bP2EqualP1_SW_NE = oSGMParams.bP2EqualP1_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bP2EqualP1_SW_NE = " << bP2EqualP1_SW_NE << ";" << std::endl;
+    int nAdaptiveP1Fnc_SW_NE = oSGMParams.nAdaptiveP1Fnc_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP1Fnc_SW_NE = " << nAdaptiveP1Fnc_SW_NE << ";" << std::endl;
+    int nAdaptiveP2Fnc_SW_NE = oSGMParams.nAdaptiveP2Fnc_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP2Fnc_SW_NE = " << nAdaptiveP2Fnc_SW_NE << ";" << std::endl;
+    bool bAdditive_SW_NE = oSGMParams.bAdditive_SW_NE;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bAdditive_SW_NE = " << bAdditive_SW_NE << ";" << std::endl;
+
+    bool bMatch_SE_NW = oSGMParams.bMatch_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bMatch_SE_NW = " << bMatch_SE_NW << ";" << std::endl;
+    float fP1_SE_NW = oSGMParams.fP1_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP1_SE_NW = " << fP1_SE_NW << ";" << std::endl;
+    float fP2_SE_NW = oSGMParams.fP2_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.fP2_SE_NW = " << fP2_SE_NW << ";" << std::endl;
+    bool bP2EqualP1_SE_NW = oSGMParams.bP2EqualP1_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bP2EqualP1_SE_NW = " << bP2EqualP1_SE_NW << ";" << std::endl;
+    int nAdaptiveP1Fnc_SE_NW = oSGMParams.nAdaptiveP1Fnc_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP1Fnc_SE_NW = " << nAdaptiveP1Fnc_SE_NW << ";" << std::endl;
+    int nAdaptiveP2Fnc_SE_NW = oSGMParams.nAdaptiveP2Fnc_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.nAdaptiveP2Fnc_SE_NW = " << nAdaptiveP2Fnc_SE_NW << ";" << std::endl;
+    bool bAdditive_SE_NW = oSGMParams.bAdditive_SE_NW;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bAdditive_SE_NW = " << bAdditive_SE_NW << ";" << std::endl;
+
+
+    bool bUseDSITexture = oSGMParams.bUseDSITexture;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bUseDSITexture = " << bUseDSITexture << ";" << std::endl;
+    bool bUseAggregatedCostTexture = oSGMParams.bUseAggregatedCostTexture;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bUseAggregatedCostTexture = " << bUseAggregatedCostTexture << ";" << std::endl;
+    bool bUseCPUSgm = oSGMParams.bUseCPUSgm;
+    std::cout << "params.oFinalSubPixelParameters.oSGMParams.bUseCPUSgm = " << bUseCPUSgm << ";" << std::endl;
+
+
+    bool bMultiGPU_AfterDSI = oFinalSubPixelParameters.bMultiGPU_AfterDSI;
+    std::cout << "params.oFinalSubPixelParameters.bMultiGPU_AfterDSI = " << bMultiGPU_AfterDSI << ";" << std::endl;
+
+    bool bMedian = oFinalSubPixelParameters.bMedian;
+    std::cout << "params.oFinalSubPixelParameters.bMedian = " << bMedian << ";" << std::endl;
+    int iMedX = oFinalSubPixelParameters.iMedX;
+    std::cout << "params.oFinalSubPixelParameters.iMedX = " << iMedX << ";" << std::endl;
+    int iMedY = oFinalSubPixelParameters.iMedY;
+    std::cout << "params.oFinalSubPixelParameters.iMedY = " << iMedY << ";" << ";" << std::endl;
+
+    bool bSpeckle = oFinalSubPixelParameters.bSpeckle;
+    std::cout << "params.oFinalSubPixelParameters.bSpeckle = " << bSpeckle << ";" << std::endl;
+
+    int iNodataPol = oFinalSubPixelParameters.iNodataPol;
+    std::cout << "params.oFinalSubPixelParameters.iNodataPol = " << iNodataPol << ";" << std::endl;
+    int iBorderPol = oFinalSubPixelParameters.iBorderPol;
+    std::cout << "params.oFinalSubPixelParameters.iBorderPol = " << iBorderPol << ";" << std::endl;
+    float fMedianThresh = oFinalSubPixelParameters.fMedianThresh;    
+    std::cout << "params.oFinalSubPixelParameters.fMedianThresh = " << fMedianThresh << ";" << std::endl;
+    bool bSplittedMedian = oFinalSubPixelParameters.bSplittedMedian;
+    std::cout << "params.oFinalSubPixelParameters.bSplittedMedian = " << bSplittedMedian << ";" << std::endl;
+
+    int iSpeckleMaxSize = oFinalSubPixelParameters.iSpeckleMaxSize;
+    std::cout << "params.oFinalSubPixelParameters.iSpeckleMaxSize = " << iSpeckleMaxSize << ";" << std::endl;
+    float fSpeckleMaxDiff = oFinalSubPixelParameters.fSpeckleMaxDiff;
+    std::cout << "params.oFinalSubPixelParameters.fSpeckleMaxDiff = " << fSpeckleMaxDiff << ";" << std::endl;
+    //back matching parameters:
+    bool bBackMatch = oFinalSubPixelParameters.bBackMatch;
+    std::cout << "params.oFinalSubPixelParameters.bBackMatch = " << bBackMatch << ";" << std::endl;
+    bool bComputeBackDisparity = oFinalSubPixelParameters.bComputeBackDisparity;
+    std::cout << "params.oFinalSubPixelParameters.bComputeBackDisparity = " << bComputeBackDisparity << ";" << std::endl;
+
+    float fMaxBackMatchingDist = oFinalSubPixelParameters.fMaxBackMatchingDist;
+    std::cout << "params.oFinalSubPixelParameters.fMaxBackMatchingDist = " << fMaxBackMatchingDist << ";" << std::endl;
+    bool bKeepValueOnNodataInBackmatch = oFinalSubPixelParameters.bKeepValueOnNodataInBackmatch;
+    std::cout << "params.oFinalSubPixelParameters.bKeepValueOnNodataInBackmatch = " << bKeepValueOnNodataInBackmatch << ";" << std::endl;
+    bool bKeepValueOnOutsideImage = oFinalSubPixelParameters.bKeepValueOnOutsideImage;
+    std::cout << "params.oFinalSubPixelParameters.bKeepValueOnOutsideImage = " << bKeepValueOnOutsideImage << ";" << std::endl;
+
+    bool bOcclusionDetection = oFinalSubPixelParameters.bOcclusionDetection;
+    std::cout << "params.oFinalSubPixelParameters.bOcclusionDetection = " << bOcclusionDetection << ";" << std::endl;
+    float fOcclusionDispGapSize = oFinalSubPixelParameters.fOcclusionDispGapSize;
+    std::cout << "params.oFinalSubPixelParameters.fOcclusionDispGapSize = " << fOcclusionDispGapSize << ";" << std::endl;
+    int nRegionGrowingMode = oFinalSubPixelParameters.nRegionGrowingMode;
+    std::cout << "params.oFinalSubPixelParameters.nRegionGrowingMode = " << nRegionGrowingMode << ";" << std::endl;
+    int nRegionGrowingIterations = oFinalSubPixelParameters.nRegionGrowingIterations;
+    std::cout << "params.oFinalSubPixelParameters.nRegionGrowingIterations = " << nRegionGrowingIterations << ";" << std::endl;
+
+    bool bInterpol = oFinalSubPixelParameters.bInterpol;
+    std::cout << "params.oFinalSubPixelParameters.bInterpol = " << bInterpol << ";" << std::endl;
+    int nDir = oFinalSubPixelParameters.nDir;
+    std::cout << "params.oFinalSubPixelParameters.nDir = " << nDir << ";" << std::endl;
+    int nNth = oFinalSubPixelParameters.nNth;
+    std::cout << "params.oFinalSubPixelParameters.nNth = " << nNth << ";" << std::endl;
+    int nMinNth = oFinalSubPixelParameters.nMinNth;
+    std::cout << "params.oFinalSubPixelParameters.nMinNth = " << nMinNth << ";" << std::endl;
+    float fRadius = oFinalSubPixelParameters.fRadius;     
+    std::cout << "params.oFinalSubPixelParameters.fRadius = " << fRadius << ";" << std::endl;
+    int nMode = oFinalSubPixelParameters.nMode;
+    std::cout << "params.oFinalSubPixelParameters.nMode = " << nMode << ";" << std::endl;
+
+    bool bOccInterpol = oFinalSubPixelParameters.bOccInterpol;                      
+    std::cout << "params.oFinalSubPixelParameters.bOccInterpol = " << bOccInterpol << ";" << std::endl;
+    int nOccDir = oFinalSubPixelParameters.nOccDir; 
+    std::cout << "params.oFinalSubPixelParameters.nOccDir = " << nOccDir << ";" << std::endl;
+    int nOccNth = oFinalSubPixelParameters.nOccNth;        
+    std::cout << "params.oFinalSubPixelParameters.nOccNth = " << nOccNth << ";" << std::endl;
+    int nOccMinNth = oFinalSubPixelParameters.nOccMinNth;
+    std::cout << "params.oFinalSubPixelParameters.nOccMinNth = " << nOccMinNth << ";" << std::endl;
+    float fOccRadius = oFinalSubPixelParameters.fOccRadius;              
+    std::cout << "params.oFinalSubPixelParameters.fOccRadius = " << fOccRadius << ";" << std::endl;
+    int nOccMode = oFinalSubPixelParameters.nOccMode;     
+    std::cout << "params.oFinalSubPixelParameters.nOccMode = " << nOccMode << ";" << std::endl;
+
+    int nDebugLevel = params.nDebugLevel;
+    std::cout << "params.nDebugLevel = " << nDebugLevel << ";" << std::endl;
+    std::string  strDebugOutput = params.strDebugOutput;
+    std::cout << "params.strDebugOutput = \"" << strDebugOutput << "\";" << std::endl;
+}
+
 extern "C" {
     I3DRSGM_EXPORTS void cvinout(
             int rows_in, int cols_in, const int cvtype_in, void *buffer_in, 

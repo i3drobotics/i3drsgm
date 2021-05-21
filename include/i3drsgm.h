@@ -200,13 +200,16 @@ public:
     static std::string getCWD();
     static std::string getAppPath();
 
+    //! Parameters for matcher
+    /*! SMatchingParametersInput from JR library */
+    JR::Phobos::SMatchingParametersInput params;
+
+    void printParams();
+
 private:
     //! Matcher handle
     /*! TSTEREOHANDLE from JR library */
     JR::Phobos::TSTEREOHANDLE matcher_handle = nullptr;
-    //! Parameters for matcher
-    /*! SMatchingParametersInput from JR library */
-    JR::Phobos::SMatchingParametersInput params;
 
     //! Minimum disparity for matcher
     int min_disparity;
