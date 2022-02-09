@@ -4,7 +4,7 @@ SETLOCAL
 :: set working directory to script directory
 SET initcwd=%cd%
 SET scriptpath=%~dp0
-cd %scriptpath:~0,-1%
+cd "%scriptpath:~0,-1%"
 
 :: install opencv
 echo "Downloading & installing opencv..."
@@ -15,7 +15,7 @@ echo "Downloading & installing phobosIntegration..."
 call ..\3rdparty\phobosIntegration-1.0.54\install_phobosIntegration.bat
 
 :: reset working directory
-cd %initcwd%
+cd "%initcwd%"
 
 :: complete message
 echo 3rdparty install complete.

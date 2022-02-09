@@ -4,7 +4,7 @@ SETLOCAL
 :: set working directory to script directory
 SET initcwd=%cd%
 SET scriptpath=%~dp0
-cd %scriptpath:~0,-1%
+cd "%scriptpath:~0,-1%"
 
 :: read i3drsgm version from file
 set /p version=< ..\version.txt
@@ -26,7 +26,7 @@ cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_APP=ON -DWITH_3RDPARTY_DLLS=ON -
 cmake --build . --config Release --target install
 
 :: reset working directory
-cd %initcwd%
+cd "%initcwd%"
 
 :: complete message
 echo Build complete.

@@ -3,7 +3,7 @@ SETLOCAL
 :: set working directory to script directory
 SET initcwd=%cd%
 SET scriptpath=%~dp0
-cd %scriptpath:~0,-1%
+cd "%scriptpath:~0,-1%"
 
 :: read i3drsgm version from file
 set /p version=< ..\version.txt 
@@ -46,7 +46,7 @@ rmdir install\i3drsgm\opencv-4.5.0\ /s /q
 rmdir install\i3drsgm\phobosIntegration-1.0.54\ /s /q
 
 :: reset working directory
-cd %initcwd%
+cd "%initcwd%"
 
 :: complete message
 echo packaging complete.

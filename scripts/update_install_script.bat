@@ -3,7 +3,7 @@ setlocal disableDelayedExpansion
 :: set working directory to script directory
 SET initcwd=%cd%
 SET scriptpath=%~dp0
-cd %scriptpath:~0,-1%
+cd "%scriptpath:~0,-1%"
 
 :: read i3drsgm version from file
 set /p version=< ..\version.txt 
@@ -23,6 +23,6 @@ echo.%%b
 )) > %OutputFile%
 
 :: reset working directory
-cd %initcwd%
+cd "%initcwd%"
 
 ENDLOCAL
